@@ -1,0 +1,330 @@
+﻿@model Ziekenfonds_Kampigo_Project.ViewModels.Groepsreis.CreateGroepsreisViewModel
+
+<partial name="_Notification" />
+@{
+    ViewData["Title"] = "Nieuwe Groepsreis Aanmaken";
+}
+<input type="hidden" id="isCreatingNewBestemming" name="IsCreatingNewBestemming" value="false" />
+
+<div class="mt-2 rounded-t-lg bg-gradient-to-r from-gray-600 to-gray-700 p-4">
+    <h2 class="text-center text-2xl font-semibold text-white">@ViewData["Title"]</h2>
+</div>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data" class="mt-5 space-y-6">
+    <!-- Two Column Layout -->
+    <div class="grid-cols-1 grid gap-6 sm:grid-cols-2">
+        <!-- Begindatum -->
+        <div class="form-group">
+            <label asp-for="Begindatum" class="block text-sm font-medium text-gray-700">Begindatum</label>
+            <input asp-for="Begindatum" class="mt-1 block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500" type="date" />
+            <span asp-validation-for="Begindatum" class="text-sm text-red-500"></span>
+        </div>
+
+        <!-- Einddatum -->
+        <div class="form-group">
+            <label asp-for="Einddatum" class="block text-sm font-medium text-gray-700">Einddatum</label>
+            <input asp-for="Einddatum" class="mt-1 block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500" type="date" />
+            <span asp-validation-for="Einddatum" class="text-sm text-red-500"></span>
+        </div>
+
+        <!-- Bestemming Selection -->
+        <div class="form-group">
+            <label asp-for="BestemmingId" class="block text-sm font-medium text-gray-700">Bestemming</label>
+            <select asp-for="BestemmingId" class="mt-1 block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500">
+                <option value=0>Kies een bestemming</option>
+                @foreach (var bestemming in Model.Bestemmingen)
+                {
+                    <option value="@bestemming.Value">@bestemming.Text</option>
+                }
+            </select>
+
+            <span asp-validation-for="BestemmingId" class="text-sm text-red-500"></span>
+        </div>
+
+        <!-- Prijs -->
+        <div class="form-group">
+            <label asp-for="Prijs" class="block text-sm font-medium text-gray-700">Prijs</label>
+            <input asp-for="Prijs" class="mt-1 block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500" type="number" step="0.01" />
+            <span asp-validation-for="Prijs" class="text-sm text-red-500"></span>
+        </div>
+    </div>
+
+    <!-- Bestemming Details -->
+    <div id="bestemmingDetails" class="hidden rounded-lg border bg-gray-50 p-4">
+        <h4 class="mb-2 text-lg font-semibold text-gray-700">Bestemming Details</h4>
+        <p class="text-sm text-gray-600"><strong>Naam:</strong> <span id="bestemmingNaam"></span></p>
+        <p class="text-sm text-gray-600"><strong>Beschrijving:</strong> <span id="bestemmingBeschrijving"></span></p>
+        <p class="text-sm text-gray-600"><strong>MinLeeftijd:</strong> <span id="bestemmingMinLeeftijd"></span></p>
+        <p class="text-sm text-gray-600"><strong>MaxLeeftijd:</strong> <span id="bestemmingMaxLeeftijd"></span></p>
+    </div>
+
+    <!-- Option to create new Bestemming -->
+    <div class="form-group">
+        <label class="text-sm font-medium text-gray-700">Of maak een nieuwe bestemming aan:</label>
+        <div class="flex items-center">
+            <!-- Bind the checkbox to the IsCreatingNewBestemming property -->
+            <input type="checkbox"
+                   id="createNewBestemming"
+                   class="mr-2"
+                   name="IsCreatingNewBestemming"
+                   value="true"
+            @(Model.IsCreatingNewBestemming ? "checked" : "")
+                   onclick="toggleNewBestemmingSection(this)" />
+            <label for="createNewBestemming" class="text-sm text-gray-700">Maak nieuwe bestemming</label>
+        </div>
+
+        <div id="newBestemmingFields"
+             class="mt-4 space-y-4 @(Model.IsCreatingNewBestemming ? "" : "hidden")">
+            <!-- Nieuwe Bestemming Fields -->
+            <div class="grid-cols-1 grid gap-6 sm:grid-cols-2">
+                <!-- Naam van Bestemming -->
+                <div class="form-group">
+                    <label asp-for="NieuweBestemmingNaam" class="block text-sm font-medium text-gray-700">Naam van Bestemming</label>
+                    <input asp-for="NieuweBestemmingNaam" class="mt-1 block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500" />
+                    <span asp-validation-for="NieuweBestemmingNaam" class="text-sm text-red-500"></span>
+                </div>
+
+                <!-- Beschrijving -->
+                <div class="form-group">
+                    <label asp-for="NieuweBestemmingBeschrijving" class="block text-sm font-medium text-gray-700">Beschrijving</label>
+                    <textarea asp-for="NieuweBestemmingBeschrijving" class="mt-1 block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+                    <span asp-validation-for="NieuweBestemmingBeschrijving" class="text-sm text-red-500"></span>
+                </div>
+
+                <!-- Minimale Leeftijd -->
+                <div class="form-group">
+                    <label asp-for="NieuweBestemmingMinLeeftijd" class="block text-sm font-medium text-gray-700">Minimale Leeftijd</label>
+                    <input asp-for="NieuweBestemmingMinLeeftijd" class="mt-1 block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500" />
+                    <span asp-validation-for="NieuweBestemmingMinLeeftijd" class="text-sm text-red-500"></span>
+                </div>
+
+                <!-- Maximale Leeftijd -->
+                <div class="form-group">
+                    <label asp-for="NieuweBestemmingMaxLeeftijd" class="block text-sm font-medium text-gray-700">Maximale Leeftijd</label>
+                    <input asp-for="NieuweBestemmingMaxLeeftijd" class="mt-1 block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500" />
+                    <span asp-validation-for="NieuweBestemmingMaxLeeftijd" class="text-sm text-red-500"></span>
+                </div>
+
+                <div class="mx-auto my-6 w-full">
+                    <!-- Photo Upload Section -->
+                    <label id="dropArea" for="Photos"
+                           class="border-2 flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-dashed border-blue-400 transition duration-200 hover:bg-blue-50">
+                        <div class="flex flex-col items-center justify-center">
+                            <svg class="h-10 w-10 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16l3.25-3.25m2.75 2.75l6-6M10 12.75l6-6M3 3h18v18H3z"></path>
+                            </svg>
+                            <p class="mt-2 text-sm text-blue-400">Click to upload or drag & drop photos here</p>
+                            <p class="mt-1 text-xs text-gray-500">You can upload multiple photos</p>
+                        </div>
+                        <input id="Photos" name="Photos" type="file" class="hidden" multiple onchange="previewImages()" accept="image/*" />
+                    </label>
+
+                    <!-- Displaying uploaded images -->
+                    <div id="imagePreviewContainer" class="grid-cols-2 mt-6 grid gap-4 md:grid-cols-4">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activiteiten Selection -->
+    <div class="form-group">
+        <label class="mb-2 block text-sm font-medium text-gray-700">Selecteer Activiteiten:</label>
+        <div class="grid gap-6 rounded-lg border border-gray-300 bg-white p-4 shadow-md md:grid-cols-2 lg:grid-cols-3">
+            @foreach (var activiteit in Model.Activiteiten)
+            {
+                <div class="flex items-center rounded-md border border-gray-200 bg-gray-50 p-2 shadow-sm hover:bg-gray-100">
+                    <input class="form-check-input h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500 focus:ring-2"
+                           type="checkbox"
+                           name="ActiviteitenIds"
+                           value="@activiteit.Value" />
+                    <label class="ml-2 text-sm text-gray-700">@activiteit.Text</label>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="mt-4 flex flex-wrap justify-start space-x-2">
+        <button type="submit"
+                class="inline-flex items-center rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-medium text-white shadow-md transition-all duration-150 ease-in-out hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <svg aria-hidden="true" class="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+            Opslaan
+        </button>
+        <a asp-controller="Groepsreis"
+           asp-action="Index"
+           class="rounded-md bg-gray-500 px-4 py-2 text-white shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
+            Terug
+        </a>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        // script to show bestemming details when a bestemming is selected
+        document.getElementById("BestemmingId").addEventListener("change", function () {
+            var bestemmingId = this.value;
+            var createNewBestemmingCheckbox = document.getElementById('createNewBestemming');
+            var bestemmingDetails = document.getElementById("bestemmingDetails");
+
+            if (bestemmingId && bestemmingId !== "0") {
+                // If a valid Bestemming is selected, disable the checkbox and show details
+                createNewBestemmingCheckbox.disabled = true;
+                createNewBestemmingCheckbox.checked = false; // Uncheck the checkbox if selected
+                document.getElementById("newBestemmingFields").style.display = "none"; // Hide new Bestemming fields
+
+                // Display the Bestemming details
+                fetch(`/Groepsreis/GetBestemmingDetails/${bestemmingId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById("bestemmingNaam").innerText = data.naam;
+                        document.getElementById("bestemmingBeschrijving").innerText = data.beschrijving;
+                        document.getElementById("bestemmingMinLeeftijd").innerText = data.minLeeftijd;
+                        document.getElementById("bestemmingMaxLeeftijd").innerText = data.maxLeeftijd;
+                        bestemmingDetails.style.display = "block"; 
+                    })
+                    .catch(error => {
+                        console.error("Error fetching Bestemming details:", error);
+                    });
+            } else {
+                // If "Kies een bestemming" (value 0) is selected, clear the details and hide the section
+                createNewBestemmingCheckbox.disabled = false; 
+                createNewBestemmingCheckbox.checked = false; 
+                document.getElementById("newBestemmingFields").style.display = "none"; 
+                bestemmingDetails.style.display = "none"; 
+
+                // Clear Bestemming details
+                document.getElementById("bestemmingNaam").innerText = '';
+                document.getElementById("bestemmingBeschrijving").innerText = '';
+                document.getElementById("bestemmingMinLeeftijd").innerText = '';
+                document.getElementById("bestemmingMaxLeeftijd").innerText = '';
+            }
+        });
+    </script>
+    <script>
+        // script for dragging photos 
+        const dropArea = document.getElementById('dropArea');
+        const fileInput = document.getElementById('Photos');
+
+       
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, (e) => e.preventDefault());
+            dropArea.addEventListener(eventName, (e) => e.stopPropagation());
+        });
+
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropArea.classList.add('bg-blue-100'));
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropArea.classList.remove('bg-blue-100'));
+        });
+
+        // Handle dropped files
+        dropArea.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files; 
+            fileInput.files = files; 
+            previewImages(); // Call the preview function to display images
+        });
+
+        // function to display the photos
+        function previewImages() {
+            const container = document.getElementById('imagePreviewContainer');
+            container.innerHTML = ''; // Clear previous previews
+            const files = fileInput.files;
+
+            Array.from(files).forEach((file) => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = "Uploaded Image";
+                    img.classList.add('w-full', 'h-32', 'object-cover', 'rounded-lg', 'shadow-md');
+                    container.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    </script>
+    <script>
+        // script to toggle new bestemming execCommand keep the state
+        function toggleNewBestemmingSection(checkbox) {
+            // Get the hidden input field
+            var hiddenInput = document.getElementById('isCreatingNewBestemming');
+
+            // Update the hidden input's value based on the checkbox state
+            if (checkbox.checked) {
+                hiddenInput.value = "true"; // If checkbox is checked, value is true
+            } else {
+                hiddenInput.value = "false"; // If checkbox is unchecked, value is false
+            }
+
+            // Toggle the visibility of the new Bestemming fields
+            var newBestemmingFields = document.getElementById('newBestemmingFields');
+            newBestemmingFields.classList.toggle('hidden', !checkbox.checked);
+        }
+    </script>
+    <script>
+        // script to preview the images when dragged into the uploaded field. And able to delete if you want to change
+        function previewImages() {
+            const fileInput = document.getElementById("Photos");
+            const imagePreviewContainer = document.getElementById("imagePreviewContainer");
+            const uploadedImages = []; 
+
+            
+            imagePreviewContainer.innerHTML = "";
+
+            // Loop through selected files
+            Array.from(fileInput.files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    // Create the preview element
+                    const imageWrapper = document.createElement("div");
+                    imageWrapper.classList.add("relative", "group");
+
+                    const img = document.createElement("img");
+                    img.src = event.target.result;
+                    img.alt = "Uploaded Image";
+                    img.classList.add("w-full", "rounded-md");
+
+                    // Create delete button
+                    const deleteBtn = document.createElement("button");
+                    deleteBtn.innerHTML = "&#10005;"; // X symbol
+                    deleteBtn.classList.add(
+                        "absolute",
+                        "top-2",
+                        "right-2",
+                        "bg-red-500",
+                        "text-white",
+                        "rounded-full",
+                        "p-1",
+                        "text-xs",
+                        "opacity-0",
+                        "group-hover:opacity-100",
+                        "transition-opacity",
+                        "duration-300"
+                    );
+
+                    // Attach click handler to remove image
+                    deleteBtn.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        imageWrapper.remove(); // Remove the preview
+                        uploadedImages.splice(index, 1); // Remove from tracking array
+                    });
+
+                    // Append the elements
+                    imageWrapper.appendChild(img);
+                    imageWrapper.appendChild(deleteBtn);
+                    imagePreviewContainer.appendChild(imageWrapper);
+
+                    // Add to the tracking array
+                    uploadedImages.push(file);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    </script>
+}

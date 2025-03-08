@@ -1,0 +1,183 @@
+﻿@model Ziekenfonds_Kampigo_Project.ViewModels.Groepsreis.GroepsreisDetailViewModel
+
+@{
+    ViewData["Title"] = "Groepsreis Details";
+}
+<partial name="_Notification" />
+<div class="mx-auto max-w-7xl p-6">
+    <!-- Registration Buttons -->
+    <div class="mb-12 flex min-w-full flex-wrap justify-center gap-8 text-center">
+        @if (User.IsInRole(SD.Role_Monitor))
+        {
+            <form asp-controller="Inschrijven" asp-action="AssignMonitor" asp-route-id="@Model.Id" method="post" class="inline-block">
+                <button type="submit" class="mx-6 my-3 w-64 text-center font-medium text-gray-700 transition-all duration-300 hover:underline">
+                    Inschrijven als Monitor
+                </button>
+
+                <a asp-controller="DeelnemersInfo" asp-action="MonitorsLijst" asp-route-id="@Model.Id" class="mx-6 my-3 w-64 text-center font-medium text-gray-700 transition-all duration-300 hover:underline">
+                    Monitors Lijst Opvragen
+                </a>
+            </form>
+
+        }
+        
+
+        @if (User.IsInRole(SD.Role_Hoofdmonitor))
+        {
+            <form asp-controller="Inschrijven" asp-action="AssignMonitor" asp-route-id="@Model.Id" method="post" class="inline-block">
+                <button type="submit" class="mx-6 my-3 w-64 text-center font-medium text-gray-700 transition-all duration-300 hover:underline">
+                    Inschrijven als Monitor
+                </button>
+            </form>
+            <form asp-controller="Inschrijven" asp-action="AssignHoofdMonitor" asp-route-id="@Model.Id" method="post" class="inline-block">
+                <button type="submit" class="mx-6 my-3 w-64 text-center font-medium text-gray-700 transition-all duration-300 hover:underline">
+                    Inschrijven als Hoofdmonitor
+                </button>
+            </form>
+            <a asp-controller="DeelnemersInfo" asp-action="DeelnemersLijst" asp-route-id="@Model.Id" class="mx-6 my-3 w-64 text-center font-medium text-gray-700 transition-all duration-300 hover:underline">
+                Deelnemers Lijst Opvragen
+            </a>
+        }
+    </div>
+
+    <!-- Title -->
+    <h1 class="mb-6 text-center text-4xl font-extrabold text-gray-800 dark:text-white sm:text-5xl lg:text-6xl">@Model.Naam</h1>
+
+    <!-- Description -->
+    <p class="mb-6 text-center text-xl text-gray-700 dark:text-gray-300 sm:text-2xl">
+        <strong class="text-gray-900 dark:text-gray-100"></strong> @Model.Beschrijving
+    </p>
+
+    <!--Hero button-->
+    @if (User.IsInRole(SD.Role_Deelnemer) || User.IsInRole(SD.Role_Monitor) || User.IsInRole(SD.Role_Hoofdmonitor))
+    {
+        <div class="mb-4 mt-8 flex justify-center">
+            <a asp-controller="Inschrijven" asp-action="Index" asp-route-id="@Model.Id" class="from-ksecondary-700 to-ksecondary-600 rounded-lg bg-gradient-to-r px-6 py-3 font-semibold text-white shadow-lg drop-shadow-lg transition-all duration-300 hover:from-ksecondary-800 hover:to-ksecondary-700 hover:scale-105">
+                <span class="relative text-lg">Schrijf je nu in!</span>
+            </a>
+        </div>
+    } else if (User.IsInRole(SD.Role_Beheerder)) 
+    {
+        <div class="mb-4 mt-8">
+        </div>
+    } else {
+        <div class="mb-4 mt-8 flex justify-center">
+            <a href="~/Identity/Account/Register" class="from-ksecondary-700 to-ksecondary-600 rounded-lg bg-gradient-to-r px-6 py-3 font-semibold text-white shadow-lg drop-shadow-lg transition-all duration-300 hover:from-ksecondary-800 hover:to-ksecondary-700 hover:scale-105">
+                <span class="relative text-lg">Registreer nu om in te schrijven!</span>
+            </a>
+
+        </div>
+    }
+
+    <!-- Activities Section -->
+    <h2 class="mb-4 text-3xl font-semibold text-gray-800 dark:text-white">Activiteiten</h2>
+    <div class="mb-12 rounded-xl bg-white p-6 shadow-xl dark:bg-gray-800 dark:shadow-gray-900">
+        <ul class="list-disc space-y-3 pl-5">
+            @if (Model.Activiteiten != null && Model.Activiteiten.Any())
+            {
+                @foreach (var activiteit in Model.Activiteiten)
+                {
+                    <li class="text-lg text-gray-700 transition-colors duration-300 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white">
+                        <strong class="font-semibold text-gray-800 dark:text-white">@activiteit.Naam:</strong> @activiteit.Beschrijving
+                    </li>
+                }
+            }
+            else
+            {
+                <li class="text-lg text-gray-700 dark:text-gray-300">Geen activiteiten beschikbaar</li>
+            }
+        </ul>
+    </div>
+
+    <!-- Date and Price Section -->
+    <div class="mb-6 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+        <!-- Begin Date -->
+        <div class="from-ksecondary-700 to-ksecondary-600 rounded-xl bg-gradient-to-r p-6 shadow-lg transition-shadow duration-300 hover:shadow-xl">
+            <p class="font-medium text-white">Begin Datum</p>
+            <p class="text-2xl font-semibold text-white">@Model.BeginDatum?.ToString("d MMM yyyy")</p>
+        </div>
+
+        <!-- End Date -->
+        <div class="from-ksecondary-700 to-ksecondary-600 rounded-xl bg-gradient-to-r p-6 shadow-lg transition-shadow duration-300 hover:shadow-xl">
+            <p class="font-medium text-white">Eind Datum</p>
+            <p class="text-2xl font-semibold text-white">@Model.EindDatum?.ToString("d MMM yyyy")</p>
+        </div>
+
+        <!-- Price -->
+        <div class="from-ksecondary-700 to-ksecondary-600 rounded-xl bg-gradient-to-r p-6 shadow-lg transition-shadow duration-300 hover:shadow-xl">
+            <p class="font-medium text-white">Prijs</p>
+            <p class="text-2xl font-semibold text-white">@($"€{Model.Prijs?.ToString("N2", System.Globalization.CultureInfo.CurrentCulture) ?? "Niet beschikbaar"}")</p>
+        </div>
+    </div>
+
+    <!-- Age Range Section -->
+    <div class="mb-12 grid gap-6 sm:grid-cols-2">
+        <!-- Min Age -->
+        <div class="from-kaccent-400 to-kaccent-300 rounded-xl bg-gradient-to-r p-6 shadow-lg transition-shadow duration-300 hover:shadow-xl">
+            <p class="font-semibold text-white">Minimale Leeftijd</p>
+            <p class="text-2xl font-bold text-white">@Model.MinLeeftijd</p>
+        </div>
+
+        <!-- Max Age -->
+        <div class="from-kaccent-400 to-kaccent-300 rounded-xl bg-gradient-to-r p-6 shadow-lg transition-shadow duration-300 hover:shadow-xl">
+            <p class="font-semibold text-white">Maximale Leeftijd</p>
+            <p class="text-2xl font-bold text-white">@Model.MaxLeeftijd</p>
+        </div>
+    </div>
+
+    <!-- Photos Section -->
+    <h2 class="mb-4 text-2xl font-semibold text-gray-800 dark:text-white">Foto's</h2>
+    <div class="grid-cols-1 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+        @if (Model.Fotos != null && Model.Fotos.Any())
+        {
+            @foreach (var foto in Model.Fotos)
+            {
+                <div class="group relative cursor-pointer">
+                    <div class="overflow-hidden rounded-lg shadow-lg">
+                        <img src="~/img/bestemming/@foto.Naam"
+                             alt="Image"
+                             class="group-hover:scale-110 h-64 w-full object-cover transition-all duration-300"
+                             onclick="openModal('@foto.Naam')" />
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <li class="text-gray-700 dark:text-gray-300">Geen foto's beschikbaar</li>
+        }
+    </div>
+</div>
+
+<!-- Modal for Zoomed Image -->
+<div id="imageModal" class="bg-opacity-40 fixed inset-0 z-50 flex hidden items-center justify-center bg-black">
+    <div class="relative rounded-lg bg-white p-4">
+        <span id="closeModal" class="absolute right-4 top-4 cursor-pointer text-2xl text-black">&times;</span>
+        <img id="zoomedImage" class="h-auto w-full max-w-4xl object-contain" />
+    </div>
+</div>
+
+<!-- JavaScript to Handle Modal -->
+<script>
+    // Open modal and set image source
+    function openModal(imageName) {
+        const modal = document.getElementById('imageModal');
+        const image = document.getElementById('zoomedImage');
+        image.src = '/img/bestemming/' + imageName;
+        modal.classList.remove('hidden'); // Show modal
+    }
+
+    // Close modal when clicking the close button
+    document.getElementById('closeModal').addEventListener('click', function () {
+        const modal = document.getElementById('imageModal');
+        modal.classList.add('hidden'); // Hide modal
+    });
+
+    // Close modal when clicking outside the image
+    document.getElementById('imageModal').addEventListener('click', function (e) {
+        if (e.target === this) {
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('hidden'); // Hide modal
+        }
+    });
+</script>

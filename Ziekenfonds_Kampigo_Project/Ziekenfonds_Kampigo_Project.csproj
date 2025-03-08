@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>aspnet-Ziekenfonds_Kampigo_Project-9e0865d8-1180-4288-bc55-17512a3bfdc0</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AspNetCore.Authentication.ApiKey" Version="8.0.1" />
+		<PackageReference Include="AutoMapper" Version="13.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.10" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.0.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="7.0.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="7.0.0" />
+	</ItemGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="..\DataAccess\DataAccess.csproj" />
+	<ProjectReference Include="..\Models\Models.csproj" />
+	<UpToDateCheckBuilt Include="wwwroot/css/app.output.css" Set="Css" />
+	<UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Kind\EditKind.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="wwwroot\img\bestemming\" />
+		<Folder Include="wwwroot\img\onkost\" />
+	</ItemGroup>
+	
+	<!--Enkel nodig als we tailwind aan het configureren zijn-->
+	<!--<Target Name="Tailwind" BeforeTargets="Build">
+		<Exec command="npm run css:build" />
+	</Target>-->
+
+
+
+</Project>

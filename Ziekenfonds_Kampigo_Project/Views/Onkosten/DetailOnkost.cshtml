@@ -1,0 +1,49 @@
+@model Ziekenfonds_Kampigo_Project.ViewModels.Groepsreis.OnkostenViewModel
+
+<div class="mt-4 rounded-lg bg-white shadow-md">
+    <!-- Header -->
+    <div class="rounded-t-lg bg-gradient-to-r from-gray-600 to-gray-700 p-4">
+        <h2 class="text-center text-2xl font-semibold text-white">Onkost Detail</h2>
+    </div>
+
+    <!-- Body -->
+    <div class="p-6 space-y-6">
+        <!-- Onkost Details -->
+        <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+            <h3 class="text-xl font-semibold text-gray-700">Details</h3>
+            <p><strong>Titel:</strong> @Model.Titel</p>
+            <p><strong>Beschrijving:</strong> @Model.Omschrijving</p>
+            <p><strong>Bedrag:</strong> € @Model.Bedag.ToString("0.00")</p>
+            <p><strong>Datum:</strong> @Model.DatumOnkost.ToString("dd/MM/yyyy")</p>
+           
+        </div>
+
+        
+        @if (Model.Foto != null && Model.Foto.Any())
+        {
+            <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
+                <h3 class="text-xl font-semibold text-gray-700">Geüploade Foto's</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                   
+                        <img src="~/img/onkost/@Model.Foto" alt="Onkost Photo" class="w-full h-48 object-cover rounded-lg shadow-md">
+                    
+                </div>
+            </div>
+        }
+        else
+        {
+            <p class="text-sm text-gray-500">Er zijn geen foto's geüpload voor deze onkost.</p>
+        }
+
+       
+        
+       
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        // Add any custom scripts for this page if necessary
+    </script>
+}

@@ -1,0 +1,137 @@
+﻿@using Ziekenfonds_Kampigo_Project.ViewModels;
+@using Ziekenfonds_Kampigo_Project.ViewModels.Groepsreis;
+@using Ziekenfonds_Kampigo_Project.ViewModels.Review
+@model GroepsreisListViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+<partial name="_Notification" />
+<div class="text-center">
+    <div class="flex items-center justify-center">
+        <div class="hero w-100 mx-auto mt-20 flex flex-col gap-4">
+            <div class="display-4 font-head text-kprimary text-6xl font-bold">ONTDEK.</div>
+            <div class="display-4 font-head text-ksecondary text-6xl font-bold">BELEEF.</div>
+            <div class="display-4 font-head text-kaccent text-6xl font-bold">GROEI.</div>
+        </div>
+    </div>
+
+    <div class="bg-ksecondary-100 mt-10 rounded-lg p-5">
+        <div class="grid-cols-2 grid gap-4">
+            @foreach (var groepsreis in Model.Groepsreizen.Select((value, index) => new { Value = value, Index = index }))
+            {
+                <div class="w-full overflow-hidden rounded-lg border bg-white @(groepsreis.Index == 0 ? "col-span-2 mb-5 p-10 relative from-ksecondary-700 to-ksecondary-600 bg-gradient-to-r text-white shadow-lg" : "border-gray-200")">
+                    @if (groepsreis.Index == 0)
+                    {
+                        <div class="bg-ksecondary absolute left-0 top-0 rounded-br-lg px-4 py-2 text-sm font-bold uppercase">
+                            Uitgelicht
+                        </div>
+                    }
+                    <div class="px-5 py-4 @(groepsreis.Index == 0 ? "text-xl" : "")">
+                        <h5 class="font-head mb-3 font-bold tracking-tight @(groepsreis.Index == 0 ? "text-6xl uppercase" : "text-3xl")">
+                            @groepsreis.Value.Naam.ToUpper()
+                        </h5>
+                        <p class="mb-4 @(groepsreis.Index == 0 ? "text-lg italic opacity-90" : "text-sm text-gray-600")">
+                            @(groepsreis.Value.BeginDatum.ToString("d MMM yyyy")) - @(groepsreis.Value.EindDatum.ToString("d MMM yyyy"))
+                        </p>
+                        <div class="mb-6">
+                            <h6 class="mb-2 @(groepsreis.Index == 0 ? "text-3xl underline font-semibold" : "text-lg")">Activiteiten:</h6>
+                            <div class="list-inside list-disc @(groepsreis.Index == 0 ? "text-lg opacity-90" : "text-sm text-gray-700")">
+                                @if (groepsreis.Value.Activiteiten != null && groepsreis.Value.Activiteiten.Activiteiten.Any())
+                                {
+                                    @foreach (var activiteit in groepsreis.Value.Activiteiten.Activiteiten)
+                                    {
+                                        <div>@activiteit.Naam</div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div>Geen activiteiten beschikbaar</div>
+                                }
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="@(groepsreis.Index == 0 ? "text-4xl bg-white text-kprimary px-6 py-3" : "text-2xl bg-ksecondary text-white my-1 px-5 py-2") rounded-lg font-bold">
+                                @($"€{groepsreis.Value.Prijs?.ToString("N2", System.Globalization.CultureInfo.CurrentCulture) ?? "Niet beschikbaar"}")
+                            </span>
+                            <a href="@Url.Action("Details", "Groepsreis", new { id = groepsreis.Value.Id })" class="bg-kaccent transform rounded-lg px-6 py-3 text-center font-medium text-white shadow-md shadow-orange-400 drop-shadow-md transition-all duration-300 ease-in-out hover:scale-105 hover:bg-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-300">
+                                Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="bg-ksecondary-100 mt-10 rounded-lg p-5 pb-7">
+        <h2 class="mb-2 mt-2 text-3xl font-semibold">Nog niet overtuigd?</h2>
+        <p class="text-md mb-7 text-gray-700">Onze klanten zijn al overtuigd. Lees hun ervaringen!</p>
+        <div class="mx-40 flex justify-center">
+            @if (Model.Reviews != null && Model.Reviews.Any())
+            {
+                // Filter recensies met een score van 3 of hoger
+                var filteredReviews = Model.Reviews.Where(r => r.Score >= 3).ToList();
+
+                if (filteredReviews.Any())
+                {
+                    <div id="carouselExample" class="relative min-h-full w-full" data-carousel="static">
+                        <!-- Carousel wrapper -->
+                        <div class="relative flex h-40 justify-center overflow-hidden rounded-lg">
+                            @foreach (var review in filteredReviews)
+                            {
+
+                                <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                                    <div class="mx-20 rounded-lg border bg-white p-4 shadow-md">
+                                        <div class="font-semibold">@review.GroepsreisNaam</div>
+                                        <div class="text-sm text-gray-500">@review.Tekst</div>
+                                        <div class="mb-4 mt-2">
+                                            @for (int i = 0; i < review.Score; i++)
+                                            {
+                                                <span class="text-yellow-500">★</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <!-- Slider controls -->
+                        <button type="button" class="group absolute left-0 top-0 z-30 flex h-full items-center justify-center px-4 focus:outline-none" data-carousel-prev>
+                            <span class="bg-kaccent group-hover:bg-kaccent-dark group-focus:ring-4 group-focus:ring-kaccent group-focus:outline-none inline-flex h-10 w-10 items-center justify-center rounded-full">
+                                <svg aria-hidden="true" class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                                <span class="sr-only">Previous</span>
+                            </span>
+                        </button>
+                        <button type="button" class="group absolute right-0 top-0 z-30 flex h-full items-center justify-center px-4 focus:outline-none" data-carousel-next>
+                            <span class="bg-kaccent group-hover:bg-kaccent-dark group-focus:ring-4 group-focus:ring-kaccent group-focus:outline-none inline-flex h-10 w-10 items-center justify-center rounded-full">
+                                <svg aria-hidden="true" class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                                <span class="sr-only">Next</span>
+                            </span>
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-gray-500">Er zijn geen recensies momenteel beschikbaar.</p>
+                }
+            }
+            else
+            {
+                <p class="text-gray-500">Er zijn nog geen recensies beschikbaar.</p>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
+}
+
+
+
+

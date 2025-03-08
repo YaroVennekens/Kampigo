@@ -1,0 +1,56 @@
+﻿@model List<Ziekenfonds_Kampigo_Project.ViewModels.Groepsreis.GroepsreisViewModel>
+
+<partial name="_DashboardNavBar" />
+
+<partial name="_Notification" />
+@{
+    ViewData["Title"] = $"Kies een reis om te reviewen";
+}
+
+<div class="container mx-auto space-y-6 p-6">
+    <!-- Header -->
+    <h1 class="text-2xl font-bold text-gray-800">Review schrijven</h1>
+
+    <!-- Groepsreizen List Section -->
+    <div class="rounded-lg bg-white p-4 shadow-lg">
+        <h2 class="mb-4 text-xl font-semibold text-gray-800">Groepsreizen waar je aan hebt deelgenomen</h2>
+
+        @if (Model != null && Model.Any())
+        {
+            <ul class="space-y-4">
+                @foreach (var groepsreis in Model)
+                {
+                    // Controleer of de reis al voorbij is
+                    var isReviewable = groepsreis.EindDatum < DateTime.Now;  // Als einddatum in het verleden ligt, is reviewen toegestaan
+
+                    <li class="p-4 border-b flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">@groepsreis.Naam</h3>
+                            <p class="text-sm text-gray-500">Begindatum: @groepsreis.BeginDatum.ToString("d")</p>
+                            <p class="text-sm text-gray-500">Einddatum: @groepsreis.EindDatum.ToString("d")</p>
+                        </div>
+
+                        <!-- De knop om een review te schrijven -->
+                        @if (!isReviewable)
+                        {
+                            <span class="inline-block bg-gray-400 px-4 py-2 text-white rounded-lg">
+                                Reviewen nog niet mogelijk
+                            </span>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("ReviewSchrijven", "Review", new { groepsreisId = groepsreis.Id })"
+                               class="inline-block bg-blue-600 px-4 py-2 text-white shadow-sm hover:bg-blue-700 rounded-lg">
+                                Schrijf een Review
+                            </a>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p class="text-gray-500">Je hebt nog geen groepsreizen gevolgd.</p>
+        }
+    </div>
+</div>

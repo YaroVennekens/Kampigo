@@ -1,0 +1,132 @@
+﻿@using Ziekenfonds_Kampigo_Project.ViewModels.OpleidingVM
+@model List<OpleidingViewModel>
+
+<partial name="_DashboardNavBar" />
+<partial name="_Notification" />
+<div class="container mx-auto space-y-6 p-6">
+    <!-- Header -->
+    <div class="rounded-t-lg bg-gradient-to-r from-gray-600 to-gray-700 p-4">
+        <h2 class="text-center text-2xl font-semibold text-white">Opleidingen Beheren</h2>
+    </div>
+
+    <div class="grid-cols-1 grid gap-4 sm:grid-cols-3">
+        <!-- Create Opleiding Button -->
+        <a asp-action="Create" asp-controller="Opleiding" class="w-full rounded-lg bg-blue-600 px-4 py-2 text-center text-white shadow-md hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300">
+            Opleiding Toevoegen
+        </a>
+    </div>
+
+    <!-- Bezig Opleidingen List Section -->
+    <div class="rounded-lg bg-white p-4 shadow-lg">
+        <h2 class="mb-4 text-xl font-semibold text-gray-800">Opleidingen</h2>
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th class="w-3/12 px-6 py-3">Naam</th>
+                        <th class="w-4/12 px-6 py-3">Beschrijving</th>
+                        <th class="px-6 py-3 sm:table-cell">Begin Datum</th>
+                        <th class="px-6 py-3 sm:table-cell">Eind Datum</th>
+                        <th class="px-6 py-3">Acties</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var opleiding in Model)
+                    {
+                        <tr class="border-b bg-white hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
+                            <td class="w-3/12 px-6 py-4">
+                                <div class="flex flex-col">
+                                    <span class="font-bold">@opleiding.Naam</span>
+                                    <div class="mt-1 flex flex-wrap gap-1">
+                                        @if (opleiding.IsBezig)
+                                        {
+                                            <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">Bezig</span>
+                                        }
+                                        @if (opleiding.IsVoltooid)
+                                        {
+                                            <span class="rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">Afgelopen</span>
+                                        }
+                                        @if (!opleiding.IsBezig && !opleiding.IsVoltooid)
+                                        {
+                                            <span class="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">Aankomend</span>
+                                        }
+@*                                         @if (opleiding.IsUitgebreid)
+                                        {
+                                            <span class="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-800 dark:bg-purple-900 dark:text-purple-300">Uitgebreid</span>
+                                        } *@
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="w-4/12 px-6 py-4">@opleiding.Beschrijving</td>
+                            <td class="px-6 py-4 sm:table-cell">@opleiding.BeginDatum.ToString("dd/MM/yyyy")</td>
+                            <td class="px-6 py-4 sm:table-cell">@opleiding.EindDatum.ToString("dd/MM/yyyy")</td>
+                            <td class="px-6 py-4">
+                                <!-- Dropdown -->
+                                <div class="relative inline-block text-left">
+                                    <button id="dropdownButton-@opleiding.Id" data-dropdown-toggle="dropdown-@opleiding.Id" class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600 dark:focus:ring-blue-800">
+                                        Acties
+                                        <svg class="-mr-1 ml-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                                        </svg>
+                                    </button>
+
+                                    <!-- Dropdown Menu -->
+                                    <div id="dropdown-@opleiding.Id" class="ring-1 ring-opacity-5 z-10 absolute right-0 mt-2 hidden w-48 rounded-lg bg-white shadow-lg ring-black focus:outline-none dark:bg-gray-800 dark:ring-gray-600">
+                                        <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownButton-@opleiding.Id">
+                                            <li>
+                                                <a asp-action="Edit" asp-controller="Opleiding" asp-route-id="@opleiding.Id" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                    <i class="fas fa-pencil-alt mr-2"></i>Aanpassen
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a asp-action="Monitors" asp-controller="Opleiding" asp-route-opleidingId="@opleiding.Id" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                    <i class="fa-solid fa-user mr-2"></i>Deelnemers
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <button type="button" class="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onclick="showDeleteModal(@opleiding.Id)">
+                                                    <i class="fas fa-trash-alt mr-2"></i>Verwijderen
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="deleteModal" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black bg-opacity-50">
+    <div class="w-full max-w-md rounded-lg bg-gradient-to-r from-gray-600 to-gray-800 p-6 shadow-xl">
+        <h3 class="border-b pb-3 text-lg font-semibold text-white">Bevestiging</h3>
+        <p class="mt-4 text-white">Weet je zeker dat je deze opleiding wilt verwijderen?</p>
+        <div class="mt-6 flex justify-end space-x-4">
+            <form id="deleteForm" method="post" asp-controller="Opleiding" asp-action="Delete">
+                <input type="hidden" id="deleteId" name="id" value="" />
+                <button type="submit" class="rounded-md bg-red-600 px-5 py-2 font-medium text-white shadow transition duration-150 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400">
+                    Verwijderen
+                </button>
+            </form>
+            <button id="cancelDeleteButton" class="rounded-md bg-gray-600 px-5 py-2 font-medium text-white shadow transition duration-150 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                Annuleren
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script>
+    function showDeleteModal(id) {
+        document.getElementById('deleteId').value = id;
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    document.getElementById('cancelDeleteButton').addEventListener('click', function () {
+        document.getElementById('deleteModal').classList.add('hidden');
+    });
+</script>

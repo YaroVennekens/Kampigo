@@ -1,0 +1,98 @@
+﻿@using Ziekenfonds_Kampigo_Project.ViewModels.OpleidingVM
+@model OpleidingCreateViewModel
+
+<partial name="_Notification" />
+@{
+    ViewData["Title"] = "Nieuwe Opleiding Aanmaken";
+}
+
+<div class="mt-2 rounded-t-lg bg-gradient-to-r from-gray-600 to-gray-700 p-4">
+    <h2 class="text-center text-2xl font-semibold text-white">@ViewData["Title"]</h2>
+</div>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data" class="mt-5 space-y-6">
+    <!-- Two Column Layout -->
+    <div class="grid-cols-1 grid gap-6 sm:grid-cols-2">
+        <!-- Naam -->
+        <div class="form-group">
+            <label asp-for="Naam" class="block text-sm font-medium text-gray-700">Naam</label>
+            <input asp-for="Naam" class="mt-1 block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500" type="text" />
+            <span asp-validation-for="Naam" class="text-sm text-red-500"></span>
+        </div>
+
+        <!-- Beschrijving -->
+        <div class="form-group">
+            <label asp-for="Beschrijving" class="block text-sm font-medium text-gray-700">Beschrijving</label>
+            <input asp-for="Beschrijving" class="mt-1 block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500" type="text" />
+            <span asp-validation-for="Beschrijving" class="text-sm text-red-500"></span>
+        </div>
+
+        <!-- Begindatum -->
+        <div class="form-group">
+            <label asp-for="BeginDatum" class="block text-sm font-medium text-gray-700">Begindatum</label>
+            <input asp-for="BeginDatum" class="mt-1 block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500" type="date" />
+            <span asp-validation-for="BeginDatum" class="text-sm text-red-500"></span>
+        </div>
+
+        <!-- Einddatum -->
+        <div class="form-group">
+            <label asp-for="EindDatum" class="block text-sm font-medium text-gray-700">Einddatum</label>
+            <input asp-for="EindDatum" class="mt-1 block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500" type="date" />
+            <span asp-validation-for="EindDatum" class="text-sm text-red-500"></span>
+        </div>
+
+        <!-- Aantal Plaatsen -->
+        <div class="form-group">
+            <label asp-for="AantalPlaatsen" class="block text-sm font-medium text-gray-700">Aantal plaatsen</label>
+            <input asp-for="AantalPlaatsen" class="mt-1 block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500" type="number" />
+            <span asp-validation-for="AantalPlaatsen" class="text-sm text-red-500"></span>
+        </div>
+
+        <!-- Vereiste Vooropleiding -->
+        <div class="form-group">
+            <label asp-for="OpleidingVereist" class="block text-sm font-medium text-gray-700">Vooropleiding</label>
+            <select asp-for="OpleidingVereist" class="mt-1 block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500">
+                @if (Model.Opleidingen != null && Model.Opleidingen.Any())
+                {
+                    <option selected value="">Kies een vooropleiding</option>
+                    @foreach (var opleiding in Model.Opleidingen)
+                    {
+                        <option value="@opleiding.Id">@opleiding.Naam</option>
+                    }
+                }
+                else
+                {
+                    <option value="">Geen opleidingen beschikbaar</option>
+                }
+            </select>
+            <span asp-validation-for="OpleidingVereist" class="text-sm text-red-500"></span>
+        </div>
+
+        <!-- Locatie -->
+        <div class="form-group">
+            <label asp-for="Locatie" class="block text-sm font-medium text-gray-700">Locatie</label>
+            <input asp-for="Locatie" class="mt-1 block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500" type="text" />
+            <span asp-validation-for="Locatie" class="text-sm text-red-500"></span>
+        </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="mt-4 flex flex-wrap justify-start space-x-2">
+        <button type="submit"
+                class="inline-flex items-center rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-medium text-white shadow-md transition-all duration-150 ease-in-out hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <svg aria-hidden="true" class="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+            Opslaan
+        </button>
+        <a asp-controller="Opleiding"
+           asp-action="Beheren"
+           class="rounded-md bg-gray-500 px-4 py-2 text-white shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
+            Terug
+        </a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

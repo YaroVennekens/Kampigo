@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Ziekenfonds_Kampigo_Project.ViewModels.OpleidingVM.OpleidingViewModel>
+
+@if (Model.Any())
+{
+    <div class="relative mt-4 overflow-x-auto">
+        <table class="w-full table-fixed text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+            <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="w-3/12 py-3 pe-6 ps-6">Naam</th>
+                    <th scope="col" class="w-3/12 py-3 pe-6">Beschrijving</th>
+                    <th scope="col" class="py-3 pe-6">Locatie</th>
+                    <th scope="col" class="w-2/12 py-3 pe-6">Datum</th>
+                    <th scope="col" class="py-3">Geaccepteerd?</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var opleiding in Model)
+                {
+                    var rowClass = opleiding.IsGeaccepteerd ? "bg-green-50 dark:bg-green-900 text-green-900 dark:text-green-300" : "bg-red-50 dark:bg-red-900 text-red-900 dark:text-red-300";
+                    <tr class="border-b @rowClass dark:border-gray-700">
+                        <td class="w-3/12 py-3 pe-6 ps-6">
+                            <div class="flex flex-col">
+                                <span class="font-bold">@opleiding.Naam</span>
+                                @if (opleiding.IsUitgebreid)
+                                {
+                                    <div class="mt-1 flex flex-wrap gap-1">
+                                        <span class="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-800 dark:bg-purple-900 dark:text-purple-300">Uitgebreid</span>
+                                    </div>
+                                }
+                            </div>
+                        </td>
+                        <td class="w-3/12 py-3 pe-6">@opleiding.Beschrijving</td>
+                        <td class="py-3 pe-6">@opleiding.Locatie</td>
+                        <td class="w-2/12 py-3 pe-6">@opleiding.BeginDatum.ToShortDateString() - @opleiding.EindDatum.ToShortDateString()</td>
+                        <td class="py-3">
+                            @if (opleiding.IsGeaccepteerd)
+                            {
+                                <div class="flex items-center gap-1">
+                                    <span class="font-bold">Ja</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="flex items-center gap-1">
+                                    <span class="font-bold">Nee</span>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+}
+else
+{
+    <p class="mt-4 text-gray-500 dark:text-gray-400">Geen opleidingen teruggevonden</p>
+}

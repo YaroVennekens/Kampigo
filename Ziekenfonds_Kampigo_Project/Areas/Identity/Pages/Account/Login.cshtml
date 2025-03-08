@@ -1,0 +1,48 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<partial name="_Notification" />
+
+<div class="grid-cols-1 grid gap-6 md:grid-cols-2">
+    <!-- Local account login -->
+    <div>
+        <section class="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+            <form id="account" method="post">
+                <h2 class="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">Log in</h2>
+                <hr class="mb-4" />
+                <div asp-validation-summary="ModelOnly" class="text-red-500" role="alert"></div>
+                <div class="mb-4">
+                    <label for="Input_Email" asp-for="Input.Email" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                    <input asp-for="Input.Email" id="Input_Email" class="form-input w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200" autocomplete="username" aria-required="true" placeholder="naam@voorbeeld.com" />
+                    <span asp-validation-for="Input.Email" class="text-sm text-red-500"></span>
+                </div>
+                <div class="mb-4">
+                    <label for="Input_Password" asp-for="Input.Password" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Wachtwoord</label>
+                    <input asp-for="Input.Password" id="Input_Password" class="form-input w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200" autocomplete="current-password" aria-required="true" placeholder="wachtwoord" />
+                    <span asp-validation-for="Input.Password" class="text-sm text-red-500"></span>
+                </div>
+                <div class="mb-4 flex items-center">
+                    <input asp-for="Input.RememberMe" type="checkbox" id="Input_RememberMe" class="form-checkbox h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-blue-600" />
+                    <label asp-for="Input.RememberMe" class="ml-2 text-sm text-gray-700 dark:text-gray-300">@Html.DisplayNameFor(m => m.Input.RememberMe)</label>
+                </div>
+                <div class="mb-4">
+                    <button type="submit" class="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 sm:w-auto dark:hover:bg-blue-700 dark:focus:ring-blue-800">Inloggen</button>
+
+                </div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">
+                    <p><a id="forgot-password" asp-page="./ForgotPassword" class="text-blue-600 hover:underline dark:text-blue-400">Uw wachtwoord vergeten?</a></p>
+                    <p><a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-blue-600 hover:underline dark:text-blue-400">Registreren als een nieuwe gebruiker</a></p>
+                    <p><a id="resend-confirmation" asp-page="./ResendEmailConfirmation" class="text-blue-600 hover:underline dark:text-blue-400">Emailbevestiging opnieuw verzenden</a></p>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

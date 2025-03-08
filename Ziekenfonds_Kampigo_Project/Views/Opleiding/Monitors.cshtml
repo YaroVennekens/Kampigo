@@ -1,0 +1,205 @@
+﻿@model Ziekenfonds_Kampigo_Project.ViewModels.OpleidingVM.OpleidingMetMonitorsViewModel
+
+<partial name="_Notification" />
+@{
+    ViewData["Title"] = $"Monitors voor Opleiding: {Model.Naam}";
+}
+
+<div class="mt-2 rounded-t-lg bg-gradient-to-r from-gray-600 to-gray-700 p-4">
+    <h2 class="text-center text-2xl font-semibold text-white">@ViewData["Title"]</h2>
+</div>
+
+<div class="mt-4 space-y-8">
+    <div class="rounded-lg bg-white p-6 shadow-md">
+        <a asp-controller="Opleiding"
+           asp-action="Beheren"
+           class="rounded-md bg-gray-500 px-4 py-2 text-white shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
+            Terug
+        </a>
+        <h3 class="mb-4 mt-6 text-2xl font-semibold text-gray-800">Monitors die nog geaccepteerd moeten worden</h3>
+        @if (Model.IngeschrevenMonitors != null && Model.IngeschrevenMonitors.Any())
+        {
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
+                                Naam
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
+                                Acties
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 bg-white">
+                        @foreach (var monitor in Model.IngeschrevenMonitors)
+                        {
+                            var tooltipId = $"tooltip-accept-{monitor.Id}";
+                            <tr>
+                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                                    @monitor.Naam
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    <form asp-controller="Opleiding" asp-action="Accept" asp-route-opleidingId="@Model.Id" method="post" class="inline">
+                                        <input type="hidden" name="monitorId" value="@monitor.Id" />
+                                        @if (Model.AantalPlaatsen <= 0)
+                                        {
+                                            <button data-tooltip-target="@tooltipId" type="submit" class="cursor-not-allowed rounded bg-gray-400 px-4 py-2 font-bold text-white" disabled>
+                                                Accepteer
+                                            </button>
+                                            <div id="@tooltipId" role="tooltip" class="z-10 opacity-0 tooltip invisible absolute inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white shadow-sm transition-opacity duration-300 dark:bg-gray-700">
+                                                Geen beschikbare plaatsen.
+                                                <div class="tooltip-arrow" data-popper-arrow></div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" class="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600">
+                                                Accepteer
+                                            </button>
+                                        }
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p class="text-gray-600">Er zijn geen monitors die nog geaccepteerd moeten worden.</p>
+        }
+    </div>
+
+    <div class="grid gap-8 md:grid-cols-2">
+        <div class="rounded-lg bg-white p-6 shadow-md">
+            <h3 class="mb-4 text-2xl font-semibold text-gray-800">Geaccepteerde Monitors</h3>
+            @if (Model.GeaccepteerdeMonitors != null && Model.GeaccepteerdeMonitors.Any())
+            {
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
+                                    Naam
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
+                                    Acties
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white">
+                            @foreach (var monitor in Model.GeaccepteerdeMonitors)
+                            {
+                                <tr>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                                        @monitor.Naam
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4">
+                                        <button type="button" onclick="showRemoveModal('@monitor.Id')" class="rounded bg-red-500 px-4 py-2 font-bold text-white hover:bg-red-600">Uitschrijven</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-gray-600">Er zijn geen geaccepteerde monitors voor deze opleiding.</p>
+            }
+        </div>
+
+        <div class="rounded-lg bg-white p-6 shadow-md">
+            <h3 class="mb-4 text-2xl font-semibold text-gray-800">Niet Ingeschreven Monitors</h3>
+            @if (Model.NietIngeschrevenMonitors != null && Model.NietIngeschrevenMonitors.Any())
+            {
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
+                                    Naam
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
+                                    Acties
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white">
+                            @foreach (var monitor in Model.NietIngeschrevenMonitors)
+                            {
+                                var tooltipId = $"tooltip-add-{monitor.Id}";
+                                <tr>
+                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
+                                        @monitor.Naam
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4">
+                                        <form asp-controller="Opleiding" asp-action="Add" asp-route-opleidingId="@Model.Id" method="post" class="inline">
+                                            <input type="hidden" name="monitorId" value="@monitor.Id" />
+                                            @if (Model.AantalPlaatsen <= 0)
+                                            {
+                                                <button data-tooltip-target="@tooltipId" type="submit" class="cursor-not-allowed rounded bg-gray-400 px-4 py-2 font-bold text-white" disabled>
+                                                    Schrijf in
+                                                </button>
+                                                <div id="@tooltipId" role="tooltip" class="z-10 opacity-0 tooltip invisible absolute inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white shadow-sm transition-opacity duration-300 dark:bg-gray-700">
+                                                    Geen beschikbare plaatsen.
+                                                    <div class="tooltip-arrow" data-popper-arrow></div>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <button type="submit" class="rounded bg-green-500 px-4 py-2 font-bold text-white hover:bg-green-600">
+                                                    Schrijf in
+                                                </button>
+                                            }
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-gray-600">Er zijn geen niet ingeschreven monitors in het systeem.</p>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="removeModal" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black bg-opacity-50">
+    <div class="w-full max-w-md rounded-lg bg-gradient-to-r from-gray-600 to-gray-800 p-6 shadow-xl">
+        <h3 class="border-b pb-3 text-lg font-semibold text-white">Bevestiging</h3>
+        <p class="mt-4 text-white">Ben je zeker dat je de monitor wilt uitschrijven?</p>
+        <div class="mt-6 flex justify-end space-x-4">
+            <form id="removeForm" method="post" asp-controller="Opleiding" asp-action="Remove" asp-route-opleidingId="@Model.Id">
+                <input type="hidden" id="removeMonitorId" name="monitorId" value="" />
+                <button type="submit" class="rounded-md bg-red-600 px-5 py-2 font-medium text-white shadow transition duration-150 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400">
+                    Uitschrijven
+                </button>
+            </form>
+            <button id="cancelRemoveButton" class="rounded-md bg-gray-600 px-5 py-2 font-medium text-white shadow transition duration-150 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                Annuleren
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function showRemoveModal(monitorId) {
+            document.getElementById('removeMonitorId').value = monitorId;
+            document.getElementById('removeModal').classList.remove('hidden');
+        }
+
+        document.getElementById('cancelRemoveButton').addEventListener('click', function () {
+            document.getElementById('removeModal').classList.add('hidden');
+        });
+    </script>
+}

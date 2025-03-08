@@ -1,0 +1,218 @@
+﻿@using Ziekenfonds_Kampigo_Project.ViewModels.OpleidingVM
+@model OverzichtOpleidingenListViewModel
+
+@{
+    ViewData["Title"] = "Overzicht Opleidingen";
+    var currentDate = DateTime.Now;
+}
+
+<partial name="_DashboardNavBar" />
+<partial name="_Notification" />
+<div class="card mt-5 rounded-lg shadow-md">
+    <div class="rounded-t-lg bg-gradient-to-r from-gray-600 to-gray-800 py-4">
+        <div class="text-center">
+            <h2 class="text-2xl font-bold text-white">Overzicht Opleidingen</h2>
+        </div>
+    </div>
+    <div class="p-6">
+        <!-- Aangeraden Opleidingen -->
+        <div class="mb-6">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Aangeraden Opleidingen</h3>
+            @if (Model.AangeradenOpleidingen.Any())
+            {
+                <div class="relative mt-4 overflow-x-auto">
+                    <table class="w-full table-fixed text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                        <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="w-3/12 py-3 pe-6 ps-6">Naam</th>
+                                <th scope="col" class="w-3/12 py-3 pe-6">Beschrijving</th>
+                                <th scope="col" class="w-32 py-3 pe-10">Locatie</th>
+                                <th scope="col" class="py-3 pe-10">Begindatum</th>
+                                <th scope="col" class="py-3 pe-10">Einddatum</th>
+                                <th scope="col" class="w-1/12 py-3">Plaatsen</th>
+                                <th scope="col" class="py-3 pe-6"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var opleiding in Model.AangeradenOpleidingen)
+                            {
+                                var tooltipId = $"tooltip-{opleiding.Id}";
+                                <tr class="border-b bg-white dark:bg-gray-800 dark:border-gray-700">
+                                    <td class="w-3/12 py-3 pe-6 ps-6">
+                                        <div class="flex flex-col">
+                                            <span class="font-bold">@opleiding.Naam</span>
+                                            <div class="mt-1 flex flex-wrap gap-1">
+                                                <span class="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">Aangeraden</span>
+
+                                                @if (opleiding.IsBijnaVol)
+                                                {
+                                                    <span class="rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">Bijna vol</span>
+                                                }
+                                                @if (opleiding.IsBezig)
+                                                {
+                                                    <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">Bezig</span>
+                                                }
+                                                @if (opleiding.IsUitgebreid)
+                                                {
+                                                    <span class="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-800 dark:bg-purple-900 dark:text-purple-300">Uitgebreid</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="w-3/12 py-3 pe-6">@opleiding.Beschrijving</td>
+                                    <td class="w-32 py-3 pe-10">@opleiding.Locatie</td>
+                                    <td class="py-3 pe-10">@opleiding.BeginDatum.ToShortDateString()</td>
+                                    <td class="py-3 pe-10">@opleiding.EindDatum.ToShortDateString()</td>
+                                    <td class="w-1/12 py-3 font-bold">@opleiding.AantalPlaatsen</td>
+                                    <td class="py-3 pe-6">
+                                        @if (opleiding.IsBezig)
+                                        {
+                                            <button data-tooltip-target="@tooltipId" type="button" class="cursor-not-allowed rounded-lg bg-gray-400 px-5 py-2.5 text-sm font-medium text-white" disabled>
+                                                Inschrijven
+                                            </button>
+                                            <div id="@tooltipId" role="tooltip" class="z-10 opacity-0 tooltip invisible absolute inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white shadow-sm transition-opacity duration-300 dark:bg-gray-700">
+                                                Deze opleiding is momenteel bezig.
+                                                <div class="tooltip-arrow" data-popper-arrow></div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                    onclick="showAssignModal(@opleiding.Id)">
+                                                Inschrijven
+                                            </button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="mb-10 mt-3 text-gray-500 dark:text-gray-400">Geen aangeraden opleidingen teruggevonden. Je bent goed bezig!</p>
+            }
+        </div>
+
+        <!-- Andere Opleidingen -->
+        <div>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Andere Opleidingen</h3>
+            @if (Model.AndereOpleidingen.Any())
+            {
+                <div class="relative mt-4 overflow-x-auto">
+                    <table class="w-full table-fixed text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                        <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="w-3/12 py-3 pe-6 ps-6">Naam</th>
+                                <th scope="col" class="w-3/12 py-3 pe-6">Beschrijving</th>
+                                <th scope="col" class="w-32 py-3 pe-10">Locatie</th>
+                                <th scope="col" class="py-3 pe-10">Begindatum</th>
+                                <th scope="col" class="py-3 pe-10">Einddatum</th>
+                                <th scope="col" class="w-1/12 py-3">Plaatsen</th>
+                                <th scope="col" class="py-3 pe-6"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var opleiding in Model.AndereOpleidingen)
+                            {
+                                var tooltipId = $"tooltip-other-{opleiding.Id}";
+                                <tr class="border-b bg-white dark:bg-gray-800 dark:border-gray-700">
+                                    <td class="w-3/12 py-3 pe-6 ps-6">
+                                        <div class="flex flex-col">
+                                            <span class="font-bold">@opleiding.Naam</span>
+                                            <div class="mt-1 flex flex-wrap gap-1">
+                                                @if (opleiding.IsBijnaVol)
+                                                {
+                                                    <span class="rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">Bijna vol</span>
+                                                }
+                                                @if (opleiding.IsBezig)
+                                                {
+                                                    <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">Bezig</span>
+                                                }
+                                                @if (opleiding.IsUitgebreid)
+                                                {
+                                                    <span class="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-800 dark:bg-purple-900 dark:text-purple-300">Uitgebreid</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="w-3/12 py-3 pe-6">@opleiding.Beschrijving</td>
+                                    <td class="w-32 py-3 pe-6">@opleiding.Locatie</td>
+                                    <td class="py-3 pe-10">@opleiding.BeginDatum.ToShortDateString()</td>
+                                    <td class="py-3 pe-10">@opleiding.EindDatum.ToShortDateString()</td>
+                                    <td class="w-1/12 py-3 font-bold">@opleiding.AantalPlaatsen</td>
+                                    <td class="py-3 pe-6">
+
+                                        @if (opleiding.IsBezig || opleiding.IsUitgebreid)
+                                        {
+                                            <button data-tooltip-target="@tooltipId" type="button" class="cursor-not-allowed rounded-lg bg-gray-400 px-5 py-2.5 text-sm font-medium text-white" disabled>
+                                                Inschrijven
+                                            </button>
+                                            <div id="@tooltipId" role="tooltip" class="z-10 opacity-0 tooltip invisible absolute inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white shadow-sm transition-opacity duration-300 dark:bg-gray-700">
+                                                @if (opleiding.IsUitgebreid)
+                                                {
+                                                    <span>U moet eerst volgende opleiding volgen: @opleiding.VereisteOpleidingNaam</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>Deze opleiding is al bezig.</span>
+                                                }
+                                                <div class="tooltip-arrow" data-popper-arrow></div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" class="rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                    onclick="showAssignModal(@opleiding.Id)">
+                                                Inschrijven
+                                            </button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="mt-4 text-gray-500 dark:text-gray-400">Geen andere opleidingen teruggevonden.</p>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="assignModal" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black bg-opacity-50">
+    <div class="w-full max-w-md rounded-lg bg-gradient-to-r from-gray-600 to-gray-800 p-6 shadow-xl">
+        <h3 class="border-b pb-3 text-lg font-semibold text-white">Bevestiging</h3>
+        <p class="mt-4 text-white">Ben je zeker dat je je wilt inschrijven?</p>
+        <div class="mt-6 flex justify-end space-x-4">
+            <form id="assignForm" method="post" asp-controller="Opleiding" asp-action="Inschrijven">
+                <input type="hidden" id="assignId" name="id" value="" />
+                <button type="submit" class="rounded-md bg-blue-600 px-5 py-2 font-medium text-white shadow transition duration-150 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    Inschrijven
+                </button>
+            </form>
+            <button id="cancelAssignButton" class="rounded-md bg-gray-600 px-5 py-2 font-medium text-white shadow transition duration-150 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                Annuleren
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function showAssignModal(id) {
+            document.getElementById('assignId').value = id;
+            document.getElementById('assignModal').classList.remove('hidden');
+        }
+
+        document.getElementById('cancelAssignButton').addEventListener('click', function () {
+            document.getElementById('assignModal').classList.add('hidden');
+        });
+    </script>
+}
+

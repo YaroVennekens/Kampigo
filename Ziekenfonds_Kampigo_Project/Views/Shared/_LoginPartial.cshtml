@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Models
+@inject SignInManager<CustomUser> SignInManager
+@inject UserManager<CustomUser> UserManager
+
+<ul class="bg-kprimary flex flex-col rounded-lg p-4 font-medium rtl:space-x-reverse dark:bg-gray-800 md:p-0 md:space-x-8 md:flex-row md:mt-0 md:border-0 md:dark:bg-gray-900">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <a asp-area="Identity" asp-page="/Account/Manage/Index" class="block rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:border-gray-700 md:p-0 dark:hover:bg-gray-700 dark:hover:text-white md:hover:bg-transparent md:hover:text-blue-700 md:dark:hover:text-blue-500 md:dark:hover:bg-transparent" title="Manage">
+                Hello, @User.Identity?.Name!
+            </a>
+        </li>
+        <li class="nav-item">
+            <form method="post" action="/Identity/Account/Logout" class="block rounded px-3 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:border-gray-700 md:p-0 dark:hover:bg-gray-700 dark:hover:text-white md:hover:bg-transparent md:hover:text-blue-700 md:dark:hover:text-blue-500 md:dark:hover:bg-transparent">
+                <button type="submit" class="w-full text-left text-gray-900 dark:text-white md:hover:text-blue-700 md:dark:hover:text-blue-500">
+                    Logout
+                </button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a href="/Identity/Account/Register" class="block rounded px-3 py-2 text-white hover:text-ksecondary-200">
+                Register
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/Identity/Account/Login" class="block rounded px-3 py-2 text-white hover:text-ksecondary-200">
+                Login
+            </a>
+        </li>
+    }
+</ul>

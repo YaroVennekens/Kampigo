@@ -1,0 +1,178 @@
+﻿@using Ziekenfonds_Kampigo_Project.ViewModels.Gebruiker
+@model GebruikerViewmodel
+
+<partial name="_Notification" />
+<div class="mt-4 rounded-lg bg-white shadow-md">
+    <!-- Header -->
+    <div class="rounded-t-lg bg-gradient-to-r from-gray-600 to-gray-700 p-4">
+        <h2 class="text-center text-2xl font-semibold text-white">Gebruiker aanpassen</h2>
+    </div>
+    <!-- Body -->
+    <div class="p-6">
+        <form class="space-y-4" method="post">
+            <div>
+                <!-- Validation Summary -->
+                <div asp-validation-summary="ModelOnly" class="text-sm text-red-500"></div>
+
+               
+                <!-- Email Field -->
+                <div class="relative mt-4">
+                    <label asp-for="Email" class="text-sm text-gray-500 transition-all">
+                        Email
+
+                    </label>
+                    <input asp-for="Email"
+                           class="peer w-full rounded-md border border-gray-300 bg-gray-50 p-4 text-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                           placeholder=" ">
+                    <span class="text-sm text-red-500" asp-validation-for="Email"></span>
+                </div>
+
+                <div class="flex flex-wrap gap-8">
+                    <!-- Voornaam -->
+                    <div class="flex-1">
+                        <label asp-for="Voornaam" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Voornaam</label>
+                        <input asp-for="Voornaam"
+                               class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500"
+                               placeholder="Jan" />
+                        <span asp-validation-for="Voornaam" class="text-sm text-red-500"></span>
+                    </div>
+
+                    <!-- Naam -->
+                    <div class="flex-1">
+                        <label asp-for="Naam" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Naam</label>
+                        <input asp-for="Naam"
+                               class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500"
+                               placeholder="Janssen" />
+                        <span asp-validation-for="Naam" class="text-sm text-red-500"></span>
+                    </div>
+                </div>
+
+
+
+
+                <div class="flex flex-wrap gap-8">
+                    <!-- Gemeente -->
+                    <div class="flex-1">
+                        <label asp-for="Gemeente" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Gemeente</label>
+                        <input asp-for="Gemeente"
+                               class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500"
+                               placeholder="Antwerpen" />
+                        <span asp-validation-for="Gemeente" class="text-sm text-red-500"></span>
+                    </div>
+
+                    <!-- Postcode -->
+                    <div class="flex-1">
+                        <label asp-for="Postcode" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Postcode</label>
+                        <input asp-for="Postcode"
+                               class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500"
+                               placeholder="2000" />
+                        <span asp-validation-for="Postcode" class="text-sm text-red-500"></span>
+                    </div>
+                </div>
+                
+                
+                
+                
+                
+                <div class="flex flex-wrap gap-8">
+                    <!-- Straat -->
+                    <div class="flex-1">
+                        <label asp-for="Straat" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Straat</label>
+                        <input asp-for="Straat"
+                               class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500"
+                               placeholder="Kerktraat" />
+                        <span asp-validation-for="Straat" class="text-sm text-red-500"></span>
+                    </div>
+
+                    <!-- Huisnummer -->
+                    <div class="flex-1">
+                        <label asp-for="Huisnummer" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Huisnummer</label>
+                        <input asp-for="Huisnummer"
+                               class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500"
+                               placeholder="1" />
+                        <span asp-validation-for="Huisnummer" class="text-sm text-red-500"></span>
+                    </div>
+                </div>
+
+
+
+
+                <!-- Geboortedatum Field -->
+                <div class="relative mt-4">
+
+                    <label asp-for="Geboortedatum" class="text-sm text-gray-500 transition-all">
+                        Geboortedatum
+
+                    </label>
+                    <input asp-for="Geboortedatum" type="date"
+                           class="peer w-full rounded-md border border-gray-300 bg-gray-50 p-4 text-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <span class="text-sm text-red-500" asp-validation-for="Geboortedatum"></span>
+                </div>
+
+                <!-- Actief drop down -->
+                <div class="relative mt-4">
+
+                    <label asp-for="IsActief"
+                           class="text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-0 peer-focus:text-sm peer-focus:text-blue-500">
+
+                        Actief
+                    </label>
+                    <select asp-for="IsActief"
+                            class="peer w-full rounded-md border border-gray-300 bg-gray-50 p-4 text-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="true">Ja</option>
+                        <option value="false">Nee</option>
+                    </select>
+                    <span class="text-sm text-red-500" asp-validation-for="IsActief"></span>
+                </div>
+
+                <!-- Monitor drop down -->
+                <div class="relative mt-4">
+
+                    <label asp-for="IsMonitor"
+                           class="text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-0 peer-focus:text-sm peer-focus:text-blue-500">
+                        Hoofdmonitor
+
+                    </label>
+                    <select asp-for="IsMonitor"
+                            class="peer w-full rounded-md border border-gray-300 bg-gray-50 p-4 text-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="true">Ja</option>
+                        <option value="false">Nee</option>
+                    </select>
+                    <span class="text-sm text-red-500" asp-validation-for="IsMonitor"></span>
+                </div>
+
+                <!-- Role Field -->
+                <div class="relative mt-4">
+
+                    <label asp-for="Role" class="text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-0 peer-focus:text-sm peer-focus:text-blue-500">
+
+                        Rol
+                    </label>
+                    <select asp-for="Role"
+                            class="peer w-full rounded-md border border-gray-300 p-4 text-sm text-gray-800 focus:border-blue-500 focus:outline-none">
+                        <option value="BEHEERDER">Beheerder</option>
+                        <option value="HOOFDMONITOR">Hoofdmonitor</option>
+                        <option value="VERANTWOORDELIJKE">Verantwoordelijke</option>
+                        <option value="HOOFDMONITOR">Hoofdmonitor</option>
+                        <option value="MONITOR">Monitor</option>
+                        <option value="DEELNEMER">Deelnemer</option>
+                    </select>
+                    <span class="text-sm text-red-500" asp-validation-for="Role"></span>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="mt-4 flex flex-wrap justify-start space-x-2">
+                <button type="submit"
+                        class="rounded-md bg-blue-500 px-4 py-2 text-white shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    Edit
+                </button>
+                <a asp-controller="Gebruiker"
+                   asp-action="Index"
+                   class="rounded-md bg-gray-500 px-4 py-2 text-white shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Terug naar Gebruiker Lijst
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

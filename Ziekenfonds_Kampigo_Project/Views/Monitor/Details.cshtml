@@ -1,0 +1,138 @@
+﻿@model Ziekenfonds_Kampigo_Project.ViewModels.Monitor.MonitorViewModel
+
+<partial name="_Notification" />
+@{
+    ViewData["Title"] = $"Monitor Details";
+}
+
+<div class="container mx-auto space-y-6 p-6">
+    <h1 class="text-2xl font-bold text-gray-800">Monitor Details</h1>
+
+    <div class="rounded-lg bg-white p-4 shadow-lg">
+        <h2 class="text-xl font-semibold text-gray-800">@Model.Gebruiker.Voornaam @Model.Gebruiker.Naam</h2>
+
+        <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+            <tr>
+                <td class="font-semibold text-gray-800">Rol:</td>
+                <td>@Model.Gebruiker.Role</td>
+            </tr>
+            <tr>
+                <td class="font-semibold text-gray-800">Email:</td>
+                <td>@Model.Gebruiker.Email</td>
+            </tr>
+            <tr>
+                <td class="font-semibold text-gray-800">Telefoonnummer:</td>
+                <td>@Model.Gebruiker.TelefoonNummer</td>
+            </tr>
+            <tr>
+                <td class="font-semibold text-gray-800">Gemeente:</td>
+                <td>@Model.Gebruiker.Gemeente</td>
+            </tr>
+            <tr>
+                <td class="font-semibold text-gray-800">Postcode:</td>
+                <td>@Model.Gebruiker.Postcode</td>
+            </tr>
+            <tr>
+                <td class="font-semibold text-gray-800">Geboortedatum:</td>
+                <td>@Model.Gebruiker.GeboorteDatum.ToString("dd/MM/yyyy")</td>
+            </tr>
+        </table>
+        <div class="mt-6">
+            <h3 class="text-lg font-bold text-gray-800">Opleidingen</h3>
+            <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400 mt-4">
+                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th class="px-4 py-2">Naam</th>
+                        <th class="px-4 py-2">Begin Datum</th>
+                        <th class="px-4 py-2">Eind Datum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Opleidingen != null && Model.Opleidingen.Any())
+                    {
+                        foreach (var opleiding in Model.Opleidingen)
+                        {
+                            <tr class="border-b">
+                                <td class="px-4 py-2">@opleiding.Naam</td>
+                                <td class="px-4 py-2">@opleiding.BeginDatum.ToString("dd/MM/yyyy")</td>
+                                <td class="px-4 py-2">@opleiding.EindDatum.ToString("dd/MM/yyyy")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center py-2">Geen opleidingen gevonden.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-6">
+            <h3 class="text-lg font-bold text-gray-800">Groepsreizen</h3>
+            <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400 mt-4">
+                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th class="px-4 py-2">Naam</th>
+                        <th class="px-4 py-2">Begin Datum</th>
+                        <th class="px-4 py-2">Eind Datum</th>
+                        <th class="px-4 py-2">Acties</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Groepsreizen != null && Model.Groepsreizen.Any())
+                    {
+                        foreach (var groepsreis in Model.Groepsreizen)
+                        {
+                            <tr class="border-b">
+                                <td class="px-4 py-2">@groepsreis.Naam</td>
+                                <td class="px-4 py-2">@groepsreis.BeginDatum.ToString("dd/MM/yyyy")</td>
+                                <td class="px-4 py-2">@groepsreis.EindDatum.ToString("dd/MM/yyyy")</td>
+                                <td class="px-4 py-2">
+                                    <a asp-action="Details" asp-controller="Groepsreis" asp-route-id="@groepsreis.Id"
+                                       class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700">
+                                        Details
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center py-2">Geen groepsreizen gevonden.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Knoppen voor promovieren of verlagen -->
+        <div class="mt-6 flex justify-between space-x-4">
+            @if (Model.Gebruiker.Role == "Hoofdmonitor")
+            {
+                <!-- Verlaag naar Monitor -->
+                <form asp-action="VerwijderHoofdMonitor" asp-route-id="@Model.Gebruiker.Id" method="post">
+                    <button type="submit" class="inline-block rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700">
+                        Maak gewone Monitor
+                    </button>
+                </form>
+            }
+            else if (Model.Gebruiker.Role == "Monitor")
+            {
+                <!-- Promoveer naar Hoofdmonitor -->
+                <form asp-action="MaakHoofdMonitor" asp-route-id="@Model.Gebruiker.Id" method="post">
+                    <button type="submit" class="inline-block rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                        Promoveer naar Hoofdmonitor
+                    </button>
+                </form>
+            }
+
+            <!-- Terug naar overzicht knop -->
+            <a asp-action="Index" asp-controller="Monitor" class="inline-block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700">
+                Terug naar overzicht
+            </a>
+        </div>
+    </div>
+</div>
+

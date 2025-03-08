@@ -1,0 +1,174 @@
+﻿@using Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<CustomUser> SignInManager
+@inject UserManager<CustomUser> UserManager
+
+@{
+    var currentUser = await UserManager.GetUserAsync(User); // Get the current user
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Kampigo!</title>
+    <link href="~/css/app.output.css" rel="stylesheet"/>
+    <link href="~/css/custom.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Ziekenfonds_Kampigo_Project.styles.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/flowbite@1.5.4/dist/flowbite.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="favicon" href="~/favicon.ico" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+</head>
+<body class="min-h-full">
+    <header>
+        <nav class="bg-kprimary border-b-4 border-kaccent">
+            <div class="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
+                <a asp-controller="Home" asp-action="Index" class="flex items-center space-x-3 rtl:space-x-reverse">
+                    <img src="~/img/logo_transparent.png" class="h-8" alt="Kampigo Logo" />
+                    <span class="font-head self-center whitespace-nowrap text-3xl font-bold text-white">KAMPIGO</span>
+                </a>
+                <div class="flex items-center space-x-3 rtl:space-x-reverse md:order-2 md:space-x-0">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <button type="button" class="flex rounded-full text-sm focus:ring-4 focus:ring-ksecondary md:me-0" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
+                            <div class="relative h-10 w-10 overflow-hidden rounded-full bg-gray-100">
+                                <svg class="absolute -left-1 h-12 w-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                            </div>
+                        </button>
+                        <!-- Dropdown menu -->
+                        <div class="z-50 my-4 hidden list-none divide-y divide-gray-100 rounded-lg bg-white text-base shadow" id="user-dropdown">
+                            <div class="px-4 py-3">
+                                <span class="block text-sm text-gray-900 dark:text-white">@User.Identity.Name</span>
+                               
+                                <span class="block truncate text-sm text-gray-500 dark:text-gray-400">@currentUser?.Naam</span>
+                            </div>
+                            <ul class="py-2" aria-labelledby="user-menu-button">
+                                <!-- validation what overzicht i need to redirect based on role.-->
+                                @if (User.IsInRole(SD.Role_Beheerder) || User.IsInRole(SD.Role_Verantwoordelijke))
+                                {
+                                    <li>
+                                        <a asp-action="AankomendeReizen" asp-controller="Dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
+                                    </li>
+                                }
+                                else if (User.IsInRole(SD.Role_Monitor) || User.IsInRole(SD.Role_Hoofdmonitor))
+                                {
+                                    <li>
+                                        <a asp-action="BeschikbareGroepsreizen" asp-controller="Dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
+                                    </li>
+                                }
+                                else if (User.IsInRole(SD.Role_Deelnemer))
+                                {
+                                    <li>
+                                        <a asp-action="BeschikbareGroepsreizen" asp-controller="Dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
+                                    </li>
+                                }
+                                <li>
+                                    <a asp-area="Identity" asp-page="/Account/Manage/Index" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white">Instellingen</a>
+                                </li>
+                                <li>
+                                    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")" method="post" class="w-full">
+                                        <div class="hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white">
+                                            <button type="submit" class="block px-4 py-2 text-start text-sm text-gray-700">Uitloggen</button>
+                                        </div>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <partial name="_LoginPartial" />
+                    }
+                    <button data-collapse-toggle="navbar-user" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-lg p-2 text-sm text-gray-500 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:text-gray-400 md:hidden dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-user" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="h-5 w-5 rounded-full" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="hidden w-full items-center justify-between md:flex md:w-auto md:order-1" id="navbar-user">
+                    <ul class="mt-4 flex flex-col rounded-lg border border-gray-100 p-4 font-medium rtl:space-x-reverse md:p-0 md:space-x-8 md:flex-row md:mt-0 md:border-0">
+                        <li>
+                            <a asp-controller="Home" asp-action="Index" class="block rounded px-3 py-2 text-white hover:text-ksecondary-200" aria-current="page">Home</a>
+                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            if (User.IsInRole(SD.Role_Monitor) || User.IsInRole(SD.Role_Hoofdmonitor))
+                            {
+                                <li>
+                                    <a asp-controller="Dashboard" asp-action="BeschikbareGroepsreizen" class="block rounded px-3 py-2 text-white hover:text-ksecondary-200">Dashboard</a>
+                                </li>
+                            }
+                            else if (User.IsInRole(SD.Role_Deelnemer))
+                            {
+                                <li>
+                                    <a asp-controller="Dashboard" asp-action="BeschikbareGroepsreizen" class="block rounded px-3 py-2 text-white hover:text-ksecondary-200">Dashboard</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a asp-controller="Dashboard" asp-action="AankomendeReizen" class="block rounded px-3 py-2 text-white hover:text-ksecondary-200">Dashboard</a>
+                                </li>
+                            }
+                        }
+                        <li>
+                            <a asp-controller="Home" asp-action="Index" class="block rounded px-3 py-2 text-white hover:text-ksecondary-200">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+
+
+            </div>
+        </nav>
+    </header>
+
+    <!-- Add margin-top for spacing between navbar and main -->
+    <div class="mx-auto max-w-screen-xl px-4 sm:px-6 md:px-8">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="m-4 rounded-lg bg-white shadow">
+        <div class="mx-auto w-full max-w-screen-xl p-4 md:py-8">
+            <div class="sm:flex sm:items-center sm:justify-between">
+                <a asp-controller="Home" asp-action="Index" class="flex items-center space-x-3 rtl:space-x-reverse">
+                    <!--<img src="~/img/logo_transparent.png" class="h-8" alt="Kampigo Logo" />-->
+                    <span class="font-head self-center whitespace-nowrap text-2xl font-bold text-gray-500">KAMPIGO</span>
+                </a>
+                <ul class="mb-6 flex flex-wrap items-center gap-x-4 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mb-0">
+                    <li>
+                        <a href="#" class="me-4 hover:underline md:me-6">Over ons</a>
+                    </li>
+                    <li>
+                        <a href="#" class="me-4 hover:underline md:me-6">Privacy Policy</a>
+                    </li>
+                    <li>
+                        <a href="#" class="me-4 hover:underline md:me-6">Licentie</a>
+                    </li>
+                    <li>
+                        <a href="#" class="hover:underline">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <hr class="my-6 border-gray-200 dark:border-gray-700 sm:mx-auto lg:my-8" />
+            <span class="block text-sm text-gray-500 dark:text-gray-400 sm:text-center">© 2023 <a href="https://flowbite.com/" class="hover:underline">Kampigo™</a>. All Rights Reserved.</span>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

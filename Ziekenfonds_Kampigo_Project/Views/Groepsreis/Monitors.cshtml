@@ -1,0 +1,357 @@
+﻿@model Ziekenfonds_Kampigo_Project.ViewModels.Groepsreis.GroepsreisDetailsWithMonitors
+
+<partial name="_Notification" />
+<div class="container mx-auto space-y-6 p-6">
+    <!-- Header -->
+    <div class="rounded-t-lg bg-gradient-to-r from-gray-600 to-gray-700 p-4">
+        <h2 class="text-center text-2xl font-semibold text-white">Monitors Beheren</h2>
+    </div>
+
+    <!-- Groepsreis Details -->
+    <div class="rounded-lg bg-white shadow-lg">
+        <a asp-controller="Groepsreis"
+           asp-action="Index"
+           class="my-3 rounded-md bg-gray-500 px-4 py-2 text-white shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
+            Terug
+        </a>
+        <div class="border-b border-gray-200 px-6 py-4">
+            <h2 class="text-xl font-semibold text-gray-800">Groepsreis Details</h2>
+        </div>
+        <div class="px-6 py-4 text-gray-700">
+            <ul class="space-y-2">
+                <li><strong>Bestemming:</strong> @Model.Bestemming.Naam</li>
+                <li><strong>Prijs:</strong> €@Model.Prijs</li>
+                <li><strong>Begindatum:</strong> @Model.Begindatum?.ToString("dd/MM/yyyy")</li>
+                <li><strong>Einddatum:</strong> @Model.Einddatum?.ToString("dd/MM/yyyy")</li>
+                <li><strong>Minimum Leeftijd:</strong> @Model.Bestemming.MinLeeftijd</li>
+                <li><strong>Maximum Leeftijd:</strong> @Model.Bestemming.MaxLeeftijd</li>
+                <li>
+                    <strong>Beschrijving:</strong> @Model.Bestemming.Beschrijving
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Hoofdmonitor Section -->
+    <div class="rounded-lg bg-white shadow-lg">
+        <div class="border-b border-gray-200 px-6 py-4">
+            <h2 class="text-xl font-semibold text-gray-800">Huidige Hoofdmonitor</h2>
+        </div>
+        <div class="px-6 py-4">
+            <!-- List of Toegewezen Hoofdmonitoren -->
+            @if (Model.Monitoren.Any(m => m.IsToegewezen && m.IsHoofdmonitor))
+            {
+                <ul class="space-y-4">
+                    @foreach (var monitor in Model.Monitoren)
+                    {
+                        @if (monitor.IsToegewezen && monitor.IsHoofdmonitor)
+                        {
+                            <li class="rounded bg-white p-4 shadow-sm hover:bg-gray-100">
+                                <p class="font-bold text-gray-900">@monitor.Gebruiker.Voornaam @monitor.Gebruiker.Naam</p>
+                                <p class="text-sm text-gray-500">Toegewezen op: 15/11/2024</p>
+                                <div class="mt-2">
+                                    <p class="text-sm font-semibold text-gray-700">Opleiding:</p>
+                                    <ul class="list-disc pl-5 text-sm text-gray-500">
+                                        @foreach (var opleiding in monitor.Opleidingen)
+                                        {
+                                            <li>@opleiding.Naam</li>
+                                        }
+                                    </ul>
+                                </div>
+                                <form method="post" asp-action="DeleteMonitor" asp-controller="Groepsreis">
+                                    <input type="hidden" name="groepsreisId" value="@Model.Id" />
+                                    <input type="hidden" name="userId" value="@monitor.Gebruiker.Id" />
+                                    <button class="mt-2 rounded bg-red-600 px-3 py-1 text-sm text-white hover:bg-red-700 focus:ring-2 focus:ring-red-300">
+                                        Verwijder Hoofdmonitor
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="rounded-lg bg-gray-50 p-4 text-center text-lg font-medium text-gray-700 shadow-sm">
+                    Geen hoofdmonitoren toegewezen.
+                </p>
+            }
+        </div>
+    </div>
+
+    <!-- Toegewezen Monitoren Section -->
+    <div class="rounded-lg bg-white shadow-lg">
+        <div class="border-b border-gray-200 px-6 py-4">
+            <h2 class="text-xl font-semibold text-gray-800">Toegewezen Monitoren</h2>
+        </div>
+        <div class="px-6 py-4">
+            <!-- List of Toegewezen Monitoren -->
+            @if (Model.Monitoren.Any(m => m.IsToegewezen && !m.IsHoofdmonitor))
+            {
+                <ul class="space-y-4">
+                    @foreach (var monitor in Model.Monitoren)
+                    {
+                        @if (monitor.IsToegewezen && !monitor.IsHoofdmonitor)
+                        {
+                            <li class="rounded bg-white p-4 shadow-sm hover:bg-gray-100">
+                                <p class="font-bold text-gray-900">@monitor.Gebruiker.Voornaam @monitor.Gebruiker.Naam</p>
+                                <p class="text-sm text-gray-500">Toegewezen op: 15/11/2024</p>
+                                <div class="mt-2">
+                                    <p class="text-sm font-semibold text-gray-700">Opleiding:</p>
+                                    <ul class="list-disc pl-5 text-sm text-gray-500">
+                                        @foreach (var opleiding in monitor.Opleidingen)
+                                        {
+                                            <li>@opleiding.Naam</li>
+                                        }
+                                    </ul>
+                                </div>
+                                <form method="post" asp-action="DeleteMonitor" asp-controller="Groepsreis">
+                                    <input type="hidden" name="groepsreisId" value="@Model.Id" />
+                                    <input type="hidden" name="userId" value="@monitor.Gebruiker.Id" />
+                                    <button class="mt-2 rounded bg-red-600 px-3 py-1 text-sm text-white hover:bg-red-700 focus:ring-2 focus:ring-red-300">
+                                        Verwijder Monitor
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="rounded-lg bg-gray-50 p-4 text-center text-lg font-medium text-gray-700 shadow-sm">
+                    Geen monitoren toegewezen.
+                </p>
+            }
+        </div>
+    </div>
+
+    <!-- Monitoren Section -->
+    <div class="rounded-lg bg-white shadow-lg">
+        <div class="border-b border-gray-200 px-6 py-4">
+            <h2 class="text-xl font-semibold text-gray-800">Monitoren Beheer</h2>
+        </div>
+        <div class="grid-cols-1 grid gap-6 md:grid-cols-2">
+            <!-- Column 1: Kandidaten voor Monitor -->
+            <div class="rounded bg-gray-50 p-4 shadow">
+                <h3 class="mb-2 text-lg font-semibold text-gray-800">Kandidaten voor Monitor</h3>
+                <!-- Search Input for Monitors -->
+                <div class="mb-4">
+                    <input type="text" id="searchMonitor" class="w-full rounded-lg border px-4 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Zoek Kandidaten voor Monitor...">
+                </div>
+                <ul id="monitorList" class="space-y-2">
+                    @foreach (var monitor in Model.Monitoren)
+                    {
+                        @if (!monitor.IsToegewezen && !monitor.IsHoofdmonitor)
+                        {
+                                   <li class="rounded bg-white p-3 shadow-sm hover:bg-gray-100">
+                                    <p><strong>@monitor.Gebruiker.Voornaam @monitor.Gebruiker.Naam</strong></p>
+                                    <div class="mt-2">
+                                        <p class="text-sm font-semibold text-gray-700">Opleiding:</p>
+                                        <ul class="list-disc pl-5 text-sm text-gray-500">
+                                        @foreach (var opleiding in monitor.Opleidingen)
+                                        {
+                                                  <li>@opleiding.Naam</li>      
+                                        }
+                                        </ul>
+                                    </div>
+                                    <form method="post" asp-action="AssignMonitor" asp-controller="Groepsreis">
+                                        <input type="hidden" name="groepsreisId" value="@Model.Id" />
+                                        <input type="hidden" name="userId" value="@monitor.Gebruiker.Id" />
+                                    <input type="hidden" name="isHoofdMonitor" value="false" id="isHoofdMonitor" />
+                                        <button type="submit" class="mt-2 rounded bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-300">
+                                            Toewijzen als Monitor
+                                        </button>
+                                    </form>
+                                </li>  
+                        }
+                    }
+                </ul>
+            </div>
+
+            <!-- Column 2: Kandidaten voor Hoofdmonitor -->
+            <div class="rounded bg-gray-50 p-4 shadow">
+                <h3 class="mb-2 text-lg font-semibold text-gray-800">Kandidaten voor Hoofdmonitor</h3>
+                <!-- Search Input Hoofdmonitor -->
+                <div class="mb-4">
+                    <input type="text" id="searchHoofdmonitor" class="w-full rounded-lg border px-4 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Zoek Kandidaten voor Hoofdmonitor...">
+                </div>
+                <ul id="hoofdmonitorList" class="space-y-2">
+                    @foreach (var monitor in Model.Monitoren)
+                    {
+                        @if (!monitor.IsToegewezen && monitor.IsHoofdmonitor)
+                        {
+                            <li class="rounded bg-white p-3 shadow-sm hover:bg-gray-100">
+                                        <p><strong>@monitor.Gebruiker.Voornaam @monitor.Gebruiker.Naam</strong></p>
+                                <div class="mt-2">
+                                    <p class="text-sm font-semibold text-gray-700">Opleiding:</p>
+                                    <ul class="list-disc pl-5 text-sm text-gray-500">
+                                        @foreach (var opleiding in monitor.Opleidingen)
+                                        {
+                                            <li>@opleiding.Naam</li>
+                                        }
+                                    </ul>
+                                </div>
+                                <form method="post" asp-action="AssignMonitor" asp-controller="Groepsreis">
+                                    <input type="hidden" name="groepsreisId" value="@Model.Id" />
+                                    <input type="hidden" name="userId" value="@monitor.Gebruiker.Id" />
+                                    <input type="hidden" name="isHoofdMonitor" value="true" id="isHoofdMonitor" />
+                                    <button type="submit" class="mt-2 rounded bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-300">
+                                        Toewijzen als Hoofdmonitor
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                    }         
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- if no users assigned then show button to show modal all monitoren -->
+    @if (!Model.Monitoren.Any(m => !m.IsToegewezen))
+    {
+        <button data-modal-target="usersModal"
+                data-modal-toggle="usersModal"
+                class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:ring-4 focus:ring-blue-300">
+            Beschikbare Monitoren
+        </button>
+    }
+
+    <!-- Users Modal -->
+    <div id="usersModal" tabindex="-1" class="fixed inset-0 z-50 hidden w-full overflow-y-auto overflow-x-hidden bg-black bg-opacity-50 p-4">
+        <div class="relative mx-auto w-full max-w-4xl">
+            <div class="relative max-h-[90vh] overflow-hidden rounded-lg bg-white shadow-lg dark:bg-gray-800">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between border-b p-4 dark:border-gray-700">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                        Beschikbare Monitoren
+                    </h3>
+                    <button type="button"
+                            class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white"
+                            data-modal-hide="usersModal">
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 011.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414 1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal -->
+                <div class="max-h-[50vh] space-y-4 overflow-auto p-6">
+                    <!-- Search bar -->
+                    <div class="mb-4">
+                        <input type="text"
+                               id="searchUser"
+                               class="w-full rounded-lg border p-2 text-sm focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+                               placeholder="Zoek gebruikers op naam..." />
+                    </div>
+                    <!-- Users list -->
+                    <ul id="userList" class="space-y-4">
+                        @foreach (var item in Model.AllUsers)
+                        {
+                            <li class="rounded bg-gray-50 p-4 shadow dark:bg-gray-800">
+                                <p class="text-lg font-semibold text-gray-900 dark:text-white">
+                                    @item.Gebruiker.Voornaam @item.Gebruiker.Naam
+                                </p>
+                                <div class="mt-2">
+                                    <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Opleidingen:</p>
+                                    <ul class="list-disc pl-5 text-sm text-gray-500 dark:text-gray-400">
+                                        @foreach (var opleiding in item.Opleidingen)
+                                        {
+                                            <li>@opleiding.Naam</li>
+                                        }
+                                    </ul>
+                                </div>
+
+                                <!-- Assign buttons -->
+                                <div class="mt-4 flex space-x-2">
+                                    <form asp-controller="Groepsreis" asp-action="AssignMonitor" method="post">
+                                        <input type="hidden" name="groepsreisId" value="@Model.Id" />
+                                        <input type="hidden" name="userId" value="@item.Gebruiker.Id" />
+                                        <input type="hidden" name="isHoofdMonitor" value="false" id="isHoofdMonitor" />
+                                        <button class="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 dark:bg-blue-700 dark:hover:bg-blue-600 dark:focus:ring-blue-500"
+                                                type="submit">
+                                            Toewijzen als Monitor
+                                        </button>
+                                    </form>
+                                    <form method="post" action="/Groepsreis/AssignMonitor">
+                                        <input type="hidden" name="groepsreisId" value="@Model.Id" />
+                                        <input type="hidden" name="userId" value="@item.Gebruiker.Id" />
+                                        <input type="hidden" name="isHoofdMonitor" value="true" />
+                                        <!-- Checking if user is hoofdmonitor or not -->
+                                        @if (!item.Gebruiker.IsMonitor)
+                                        {
+                                            <!-- Disabled -->
+                                            <button type="submit"
+                                                    class="cursor-not-allowed rounded bg-gray-400 px-4 py-2 text-sm font-medium text-white dark:bg-gray-600 dark:text-gray-400"
+                                                    disabled>
+                                                Toewijzen als Hoofdmonitor
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <!-- Active -->
+                                            <button type="submit"
+                                                    class="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:ring-4 focus:ring-red-300 dark:bg-red-700 dark:hover:bg-red-600 dark:focus:ring-red-500">
+                                                Toewijzen als Hoofdmonitor
+                                            </button>
+                                        }
+                                    </form>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <!-- close modal section -->
+                <div class="flex items-center justify-end border-t border-gray-200 p-4 dark:border-gray-700">
+                    <button type="button"
+                            class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-4 focus:ring-blue-300"
+                            data-modal-hide="usersModal">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+</div>
+
+
+<script>
+    // JavaScript function to filter users
+    document.getElementById('searchUser').addEventListener('input', function (event) {
+        let filter = event.target.value.toLowerCase().trim(); // Normalize input text
+        let items = document.querySelectorAll('#userList li'); // Get all user list items
+        items.forEach(function (item) {
+            let nameElement = item.querySelector('p'); // Ensure we're targeting the <p> for names
+            if (nameElement) {
+                let name = nameElement.textContent.toLowerCase().trim(); // Normalize name text
+                item.style.display = name.includes(filter) ? '' : 'none';
+            }
+        });
+    });
+    document.getElementById('searchMonitor').addEventListener('input', function(event) {
+        let filter = event.target.value.toLowerCase().trim(); // Normalize input text
+        let items = document.querySelectorAll('#monitorList li');
+        items.forEach(function(item) {
+            let nameElement = item.querySelector('strong'); // Ensure we're targeting <strong> for names
+            if (nameElement) {
+                let name = nameElement.textContent.toLowerCase().trim(); // Normalize name text
+                item.style.display = name.includes(filter) ? '' : 'none';
+            }
+        });
+    });
+
+    document.getElementById('searchHoofdmonitor').addEventListener('input', function(event) {
+        let filter = event.target.value.toLowerCase().trim(); // Normalize input text
+        let items = document.querySelectorAll('#hoofdmonitorList li');
+        items.forEach(function(item) {
+            let nameElement = item.querySelector('strong'); // Ensure we're targeting <strong> for names
+            if (nameElement) {
+                let name = nameElement.textContent.toLowerCase().trim(); // Normalize name text
+                item.style.display = name.includes(filter) ? '' : 'none';
+            }
+        });
+    });
+</script>

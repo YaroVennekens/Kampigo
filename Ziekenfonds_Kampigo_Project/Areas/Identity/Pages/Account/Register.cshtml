@@ -1,0 +1,121 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Registreren";
+}
+
+<partial name="_Notification" />
+
+<div class="grid-cols-1 grid gap-6 md:grid-cols-2">
+    <!-- Register Form -->
+    <div>
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+            <h2 class="mb-4 text-2xl font-semibold text-gray-700 dark:text-gray-200">Maak een nieuw account aan.</h2>
+            <hr class="mb-4" />
+            <div asp-validation-summary="ModelOnly" class="mb-4 text-red-500" role="alert"></div>
+
+            <!-- Email -->
+            <div class="mb-4">
+                <label asp-for="Input.Email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                <input asp-for="Input.Email" class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500" autocomplete="email" placeholder="naam@voorbeeld.com" required aria-required="true" />
+                <span asp-validation-for="Input.Email" class="text-sm text-red-500"></span>
+            </div>
+            
+            <div class="flex space-x-4">
+                <!-- Voornaam -->
+                <div class="flex-1 mb-4">
+                    <label asp-for="Input.Voornaam" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Voornaam</label>
+                    <input asp-for="Input.Voornaam" class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500" autocomplete="voornaam" placeholder="voornaam" required aria-required="true" />
+                    <span asp-validation-for="Input.Voornaam" class="text-sm text-red-500"></span>
+                </div>
+
+                <!-- Achternaam -->
+                <div class="flex-1 mb-4">
+                    <label asp-for="Input.Naam" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Achternaam</label>
+                    <input asp-for="Input.Naam" class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500" autocomplete="achternaam" placeholder="achternaam" required aria-required="true" />
+                    <span asp-validation-for="Input.Naam" class="text-sm text-red-500"></span>
+                </div>
+            </div>
+
+            <div class="flex space-x-4">
+                <!-- Gemeente -->
+                <div class="flex-1 mb-4">
+                    <label asp-for="Input.Gemeente" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Gemeente</label>
+                    <input asp-for="Input.Gemeente" class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500" autocomplete="gemeente" placeholder="retie" required aria-required="true" />
+                    <span asp-validation-for="Input.Gemeente" class="text-sm text-red-500"></span>
+                </div>
+
+                <!-- Postcode -->
+                <div class="flex-1 mb-4">
+                    <label asp-for="Input.Postcode" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Postcode</label>
+                    <input asp-for="Input.Postcode" class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500" autocomplete="postcode" placeholder="postcode" required aria-required="true" />
+                    <span asp-validation-for="Input.Postcode" class="text-sm text-red-500"></span>
+                </div>
+            </div>
+
+
+            <div class="flex space-x-4">
+                <!-- Gemeente -->
+                <div class="flex-1 mb-4">
+                    <label asp-for="Input.Straat" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Straat</label>
+                    <input asp-for="Input.Straat" class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500" autocomplete="straat" placeholder="straatnaam" required aria-required="true" />
+                    <span asp-validation-for="Input.Straat" class="text-sm text-red-500"></span>
+                </div>
+
+                <!-- Postcode -->
+                <div class="flex-1 mb-4">
+                    <label asp-for="Input.Huisnummer" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Huisnummer</label>
+                    <input asp-for="Input.Huisnummer" class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500" autocomplete="huisnummer" placeholder="1" required aria-required="true" />
+                    <span asp-validation-for="Input.Huisnummer" class="text-sm text-red-500"></span>
+                </div>
+            </div>
+            <!-- Telefoonnummer -->
+            <div class="mb-4">
+                <label asp-for="Input.TelefoonNummer" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Telefoonnummer</label>
+                <input 
+                    asp-for="Input.TelefoonNummer"
+                    class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500"
+                    autocomplete="new-password"
+                    placeholder="telefoonnummer"
+                    required aria-required="true"
+                   />
+                <span asp-validation-for="Input.TelefoonNummer" class="text-sm text-red-500"></span>
+            </div>
+            
+            <!-- GeboorteDatum -->
+            <div class="mb-4">
+                <label asp-for="Input.GeboorteDatum" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Geboortedatum</label>
+                <input
+                    asp-for="Input.GeboorteDatum"
+                    type="date"
+                    class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500"
+                    autocomplete="new-password"
+                    aria-required="true" />
+                <span asp-validation-for="Input.GeboorteDatum" class="text-sm text-red-500"></span>
+            </div>
+            
+
+            <!-- Password -->
+            <div class="mb-4">
+                <label asp-for="Input.Password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Wachtwoord</label>
+                <input asp-for="Input.Password" class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500" autocomplete="new-password" placeholder="wachtwoord" required aria-required="true" />
+                <span asp-validation-for="Input.Password" class="text-sm text-red-500"></span>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-6">
+                <label asp-for="Input.ConfirmPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Herhaal wachtwoord</label>
+                <input asp-for="Input.ConfirmPassword" class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:ring-blue-500" autocomplete="new-password" placeholder="herhaal password" required aria-required="true" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-sm text-red-500"></span>
+            </div>
+
+            <!-- Register Button -->
+            <button type="submit" class="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 sm:w-auto dark:hover:bg-blue-700 dark:focus:ring-blue-800">Registreer</button>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,101 @@
+﻿@model List<Ziekenfonds_Kampigo_Project.ViewModels.Groepsreis.MijnMonitoredGroepsreisViewModel>
+<!--Quick bandaid fix-->
+@using Microsoft.AspNetCore.Identity
+@using Models
+@inject UserManager<CustomUser> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User); // Get the current user
+}
+
+@{
+    ViewData["Title"] = "Mijn Monitorreizen";
+}
+
+<partial name="_DashboardNavBar" />
+<partial name="_Notification" />
+
+<div class="container mx-auto space-y-6 p-6">
+    <!-- Header -->
+    <div class="rounded-t-lg bg-gradient-to-r from-gray-600 to-gray-700 p-4">
+        <h2 class="text-center text-2xl font-semibold text-white">Mijn Monitoring Groepsreizen</h2>
+    </div>
+
+    <!-- Monitored Groepsreizen List Section -->
+    <div class="rounded-lg bg-white p-4 shadow-lg">
+        <h2 class="mb-4 text-xl font-semibold text-gray-800">Uw Monitoring Groepsreizen</h2>
+        <div class="relative overflow-x-auto sm:rounded-lg">
+            @if (Model.Count > 0) {
+                <table class="w-full text-left text-sm text-gray-500 shadow-md dark:text-gray-400">
+                    <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th class="px-6 py-3">Bestemming</th>
+                            <th class="px-6 py-3">Prijs</th>
+                            <th class="px-6 py-3">Begin Datum</th>
+                            <th class="px-6 py-3">Eind Datum</th>
+                            <th class="px-6 py-3">Hoofd Monitor</th>
+                            <th class="px-6 py-3">Toegewezen</th>
+                            <th class="px-6 py-3">Acties</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var groepsreis in Model)
+                        {
+                            // Conditional class based on whether the user is assigned or not
+                            var rowClass = groepsreis.IsToegewezen ? "bg-green-50 hover:bg-green-100" : "bg-red-50 hover:bg-red-100";
+
+                            <tr class="border-b @rowClass dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
+                                <td class="px-6 py-4">@groepsreis.Naam</td>
+                                <td class="px-6 py-4">@groepsreis.Prijs</td>
+                                <td class="px-6 py-4">@groepsreis.BeginDatum.ToString("dd/MM/yyyy")</td>
+                                <td class="px-6 py-4">@groepsreis.EindDatum.ToString("dd/MM/yyyy")</td>
+                                <td class="px-6 py-4">@(groepsreis.IsHoofdMonitor ? "Ja" : "Nee")</td>
+                                <td class="px-6 py-4">
+                                    <!-- Conditional text with color based on the IsToegewezen status -->
+                                    <span class="@((groepsreis.IsToegewezen ? "text-green-600" : "text-red-600 font-semibold"))">
+                                        @(groepsreis.IsToegewezen ? "Geaccepteerd" : "Niet Toegewezen")
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <!-- Dropdown -->
+                                    <div class="relative inline-block text-left">
+                                        <button id="dropdownButton-@groepsreis.Id" data-dropdown-toggle="dropdown-@groepsreis.Id" class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600 dark:focus:ring-blue-800">
+                                            Acties
+                                            <svg class="-mr-1 ml-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                                            </svg>
+                                        </button>
+
+                                        <!-- Dropdown Menu -->
+                                        <div id="dropdown-@groepsreis.Id" class="ring-1 ring-opacity-5 z-10 absolute right-0 mt-2 hidden w-48 rounded-lg bg-white shadow-lg ring-black focus:outline-none dark:bg-gray-800 dark:ring-gray-600">
+                                            <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownButton-@groepsreis.Id">
+                                                <li>
+                                                    <a asp-action="Details" asp-controller="Groepsreis" asp-route-id="@groepsreis.Id" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                        <i class="fas fa-info-circle mr-2"></i>Details
+                                                    </a>
+                                                </li>
+                                                @if (User.IsInRole(SD.Role_Hoofdmonitor))
+                                                {
+                                                    <li>
+                                                        <a asp-action="Onkosten" asp-controller="Onkosten" asp-route-id="@groepsreis.Id" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                            <i class="fas fa-users mr-2"></i>Onkosten ingeven 
+                                                        </a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="mb-10 mt-3 text-gray-500 dark:text-gray-400">Geen monitorreizen gevonden.</p>
+            }
+            
+        </div>
+    </div>
+</div>

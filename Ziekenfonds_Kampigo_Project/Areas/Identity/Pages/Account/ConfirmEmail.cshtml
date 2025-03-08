@@ -1,0 +1,26 @@
+﻿@page
+@model ConfirmEmailModel
+@{
+    ViewData["Title"] = "Bevestig email";
+}
+
+
+
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+
+<div class="flex min-h-screen items-center justify-center bg-gray-100">
+    <div class="w-full max-w-md rounded-lg bg-white p-8 text-center shadow-md">
+        <h1 class="mb-4 text-3xl font-bold text-gray-800">@ViewData["Title"]</h1>
+
+        <div class="mb-6 text-gray-600">
+            <partial name="_StatusMessage" model="Model.StatusMessage" />
+        </div>
+
+        <a asp-controller="Dashboard"
+           asp-action="BeschikbareGroepsreizen"
+           class="inline-block rounded bg-blue-600 px-4 py-2 font-semibold text-white transition duration-200 hover:bg-blue-700">
+            Ga naar dashboard
+        </a>
+    </div>
+</div>
+

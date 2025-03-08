@@ -1,0 +1,226 @@
+﻿@model Ziekenfonds_Kampigo_Project.ViewModels.Groepsreis.OnkostenViewModel
+
+<partial name="_Notification" />
+
+<div class="mt-4 rounded-lg bg-white shadow-md">
+    <!-- Header -->
+    <div class="rounded-t-lg bg-gradient-to-r from-gray-600 to-gray-700 p-4">
+        <h2 class="text-center text-2xl font-semibold text-white">@Model.Groepsreis.Bestemming.Naam.ToUpper()</h2>
+    </div>
+
+    <!-- Body -->
+    <div class="p-6">
+        <div class="space-y-6">
+            <div class="rounded-lg bg-gray-100 p-4 shadow-sm">
+                <h3 class="text-xl font-semibold text-gray-700">Groepsreis Details</h3>
+                <p><strong>Begin Datum:</strong> @Model.Groepsreis.Begindatum.ToString("dd/MM/yyyy")</p>
+                <p><strong>Eind Datum:</strong> @Model.Groepsreis.Einddatum.ToString("dd/MM/yyyy") </p>
+                <p><strong>Prijs:</strong> € @Model.Groepsreis.Prijs</p>
+                <p><strong>Aantal Deelnemers:</strong> @Model.Groepsreis.Deelnemers.Count()</p>
+             
+            </div>
+
+            <!-- Totaal Onkosten Overzicht -->
+       
+
+            <!-- Onkosten -->
+            <div class="rounded-lg bg-gray-100 p-4 shadow-sm">
+                <h3 class="text-xl font-semibold text-gray-700">Onkosten:</h3>
+                @if (Model.Onkosten != null && Model.Onkosten.Any())
+                {
+                    <!-- Scrollable container for the Onkosten table -->
+                    <div class="mt-4 max-h-60 overflow-y-auto rounded-lg border border-gray-300">
+                        <table class="w-full table-auto">
+                            <thead class="bg-gray-200">
+                                <tr class="px-4 py-2 text-left text-sm font-medium text-gray-600">
+                                    <th>Titel</th>
+                                    <th>Beschrijving</th>
+                                    <th>Bedrag</th>
+                                    <th>Datum</th>
+                                    <th>Actie</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var onkosten in Model.Onkosten)
+                            {
+                            <tr class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                <td>@onkosten.Titel</td>
+                                <td>@onkosten.Omschrijving</td>
+                                <td>€ @onkosten.Bedag.ToString("0.00")</td>
+                                <td>@onkosten.DatumOnkost.ToString("dd/MM/yyyy")</td>
+                                <td class="px-4 py-2 text-sm text-red-500">
+                                    <form asp-action="DeleteOnkost" asp-controller="Onkosten" method="post" class="inline-block">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="groepsreisId" value="@Model.GroepsreisId" />
+                                        <input type="hidden" name="id" value="@onkosten.Id" />
+                                        <button type="submit" class="text-red-500 hover:text-red-700"
+                                                onclick="return confirm('Weet je zeker dat je deze onkosten wilt verwijderen?');">
+                                            Verwijderen
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("DetailOnkost", "Onkosten", new { id = onkosten.Id })"
+                                       class="text-blue-500 hover:text-blue-700">
+                                        View Detail
+                                    </a>
+                                </td>
+                            </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="rounded-lg bg-gray-100 p-4 shadow-sm">
+                        <h3 class="text-xl font-semibold text-gray-700">Totaal kosten:</h3>
+                        <p><strong>Totaal bedrag onkosten:</strong> € 
+                            @{
+                                float totaalBedrag = 0;
+                                foreach (var onkosten in Model.Onkosten)
+                                {
+                                    totaalBedrag += onkosten.Bedag;
+                                }
+                            }
+                            @totaalBedrag.ToString("0.00")
+                        </p>
+                        <p><strong>Totaal bedrag groepreis:</strong> €
+                            @{
+                                float totaalBedragGroepreis = 0;
+                                totaalBedragGroepreis = Model.Groepsreis.Deelnemers.Count * Model.Groepsreis.Prijs;
+                                
+                                
+                            }
+                            @totaalBedragGroepreis.ToString("0.00")
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <p class="mt-4 text-sm text-gray-500">Er zijn geen onkosten voor deze groepsreis.</p>
+                }
+            </div>
+
+            <!-- Form to add new Onkosten -->
+            <h4 class="text-xl font-semibold text-gray-700">Nieuwe Onkosten Invoeren</h4>
+            <form asp-action="AddOnkosten" asp-controller="Onkosten" method="post" enctype="multipart/form-data" class="space-y-6">
+                <!-- Validation Summary -->
+                <div asp-validation-summary="ModelOnly" class="text-sm text-red-500"></div>
+
+                <div class="grid-cols-1 grid gap-6 md:grid-cols-2">
+                    <div>
+                        <label for="Title" class="block text-sm font-medium text-gray-700">Titel</label>
+                        <input type="text" class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500" id="Title" name="Title" value="" required />
+                        <span class="text-sm text-red-500" asp-validation-for="Titel"></span>
+                    </div>
+
+                    <div>
+                        <label for="Description" class="block text-sm font-medium text-gray-700">Beschrijving</label>
+                        <input type="text" class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500" id="Description" name="Description" value="" required />
+                        <span class="text-sm text-red-500" asp-validation-for="Omschrijving"></span>
+                    </div>
+
+                    <div>
+                        <label for="Amount" class="block text-sm font-medium text-gray-700">Bedrag (€)</label>
+                        <input type="number" class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500" id="Amount" name="Amount" step="0.01" required />
+                        <span class="text-sm text-red-500" asp-validation-for="Bedag"></span>
+                    </div>
+
+                    <div>
+                        <label for="Date" class="block text-sm font-medium text-gray-700">Datum</label>
+                        <input type="date" class="form-input w-full rounded-lg border border-gray-300 p-3 focus:ring-blue-500 focus:border-blue-500" id="Date" name="Date" required />
+                        <span class="text-sm text-red-500" asp-validation-for="DatumOnkost"></span>
+                    </div>
+                </div>
+
+                
+                @if (User.IsInRole(SD.Role_Hoofdmonitor))
+                {
+                    
+              
+                <div class="mx-auto my-6 w-full">
+                    <!-- Photo Upload Section -->
+                    <label id="dropArea" for="Photos"
+                           class="border-2 flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-dashed border-blue-400 transition duration-200 hover:bg-blue-50">
+                        <div class="flex flex-col items-center justify-center">
+                            <svg class="h-10 w-10 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16l3.25-3.25m2.75 2.75l6-6M10 12.75l6-6M3 3h18v18H3z"></path>
+                            </svg>
+                            <p class="mt-2 text-sm text-blue-400">Click to upload or drag & drop photos here</p>
+                            <p class="mt-1 text-xs text-gray-500">You can upload multiple photos</p>
+                        </div>
+                        <input id="Photos" name="Photos" type="file" class="hidden" multiple onchange="previewImages()" accept="image/*" />
+                    </label>
+
+                    <!-- Displaying uploaded images -->
+                    <div id="imagePreviewContainer" class="grid-cols-2 mt-6 grid gap-4 md:grid-cols-4">
+                    </div>
+                </div>
+                
+                
+                }
+                
+                
+
+                <input type="hidden" name="GroepsreisId" value="@Model.GroepsreisId" />
+                <button type="submit" class="mt-4 w-full rounded-lg bg-blue-500 px-6 py-3 text-white hover:bg-blue-600">Onkosten Invoeren</button>
+            </form>
+
+            @if(User.IsInRole(SD.Role_Verantwoordelijke) || User.IsInRole(SD.Role_Beheerder))
+            {
+                <a href="@Url.Action("Index", "Groepsreis")" class="mt-6 block text-center text-sm text-gray-600 hover:text-blue-500">Terug naar overzicht</a>
+            }
+            else if (User.IsInRole(SD.Role_Hoofdmonitor))
+            {
+                <a href="@Url.Action("MonitorReizen", "Dashboard")" class="mt-6 block text-center text-sm text-gray-600 hover:text-blue-500">Terug naar overzicht</a>
+            }
+            
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+<script>
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('Photos');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, (e) => e.preventDefault());
+        dropArea.addEventListener(eventName, (e) => e.stopPropagation());
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => dropArea.classList.add('bg-blue-100'));
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => dropArea.classList.remove('bg-blue-100'));
+    });
+
+    // Handle dropped files
+    dropArea.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        fileInput.files = files;
+        previewImages(); // Call the preview function to display images
+    });
+
+    // function to display the photos
+    function previewImages() {
+        const container = document.getElementById('imagePreviewContainer');
+        container.innerHTML = ''; // Clear previous previews
+        const files = fileInput.files;
+
+        Array.from(files).forEach((file) => {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = "Uploaded Image";
+                img.classList.add('w-full', 'h-32', 'object-cover', 'rounded-lg', 'shadow-md');
+                container.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+</script>
+}

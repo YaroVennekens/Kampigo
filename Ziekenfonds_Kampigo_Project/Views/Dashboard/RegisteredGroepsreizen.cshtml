@@ -1,0 +1,78 @@
+﻿@model List<Ziekenfonds_Kampigo_Project.ViewModels.Groepsreis.RegisteredGroepsreisViewModel>
+
+<partial name="_DashboardNavBar" />
+<partial name="_Notification" />
+
+<div class="container mx-auto space-y-6 p-6">
+    <!-- Header -->
+    <div class="rounded-t-lg bg-gradient-to-r from-gray-600 to-gray-700 p-4">
+        <h2 class="text-center text-2xl font-semibold text-white">Ingeschreven Groepsreizen</h2>
+    </div>
+
+    <!-- Registered Groepsreizen List Section -->
+    <div class="rounded-lg bg-white p-4 shadow-lg">
+        <h2 class="mb-4 text-xl font-semibold text-gray-800">Uw Ingeschreven Groepsreizen</h2>
+        <div class="relative overflow-x-auto sm:rounded-lg">
+            @if (Model.Count > 0) {
+                <table class="w-full text-left text-sm text-gray-500 shadow-md dark:text-gray-400">
+                    <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th class="px-6 py-3">Bestemming</th>
+                            <th class="px-6 py-3">Prijs</th>
+                            <th class="px-6 py-3">Begin Datum</th>
+                            <th class="px-6 py-3">Eind Datum</th>
+                            <th class="px-6 py-3">Kind</th>
+                            <th class="px-6 py-3">Opmerking</th>
+                            <th class="px-6 py-3">Acties</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- For loop to generate unique ids for dropdown details-->
+                        @foreach (var groepsreis in Model.Select((item, index) => new { item, index }))
+                        {
+                            <tr class="border-b bg-white hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
+                                <td class="px-6 py-4">@groepsreis.item.Naam</td>
+                                <td class="px-6 py-4">@groepsreis.item.Prijs</td>
+                                <td class="px-6 py-4">@groepsreis.item.BeginDatum.ToString("dd/MM/yyyy")</td>
+                                <td class="px-6 py-4">@groepsreis.item.EindDatum.ToString("dd/MM/yyyy")</td>
+                                <td class="px-6 py-4">@groepsreis.item.KindNaam</td>
+                                <td class="max-w-xs break-words px-6 py-4 text-xs" title="@groepsreis.item.Opmerking">
+                                    @groepsreis.item.Opmerking
+                                </td>
+                                <td class="px-6 py-4">
+                                    <!-- Dropdown -->
+                                    <div class="relative inline-block text-left">
+                                        <button id="dropdownButton-@groepsreis.item.Id-@groepsreis.index"
+                                                data-dropdown-toggle="dropdown-@groepsreis.item.Id-@groepsreis.index"
+                                                class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600 dark:focus:ring-blue-800">
+                                            Acties
+                                            <svg class="-mr-1 ml-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                                            </svg>
+                                        </button>
+
+                                        <!-- Dropdown Menu -->
+                                        <div id="dropdown-@groepsreis.item.Id-@groepsreis.index" class="ring-1 ring-opacity-5 z-10 absolute right-0 mt-2 hidden w-48 rounded-lg bg-white shadow-lg ring-black focus:outline-none dark:bg-gray-800 dark:ring-gray-600">
+                                            <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownButton-@groepsreis.item.Id-@groepsreis.index">
+                                                <li>
+                                                    <a asp-action="Details" asp-controller="Groepsreis" asp-route-id="@groepsreis.item.Id" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                        <i class="fas fa-info-circle mr-2"></i>Details
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="mb-10 mt-3 text-gray-500 dark:text-gray-400">Geen ingeschreven groepsreizen gevonden.</p>
+            }
+        </div>
+    </div>
+</div>
+

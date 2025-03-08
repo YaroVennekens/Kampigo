@@ -1,0 +1,93 @@
+﻿@model Ziekenfonds_Kampigo_Project.ViewModels.Groepsreis.GroepsreisDeelnemersWithOuderViewModel
+
+
+<partial name="_Notification" />
+<div class="container mx-auto space-y-6 p-6">
+    <!-- Header -->
+    <div class="rounded-t-lg bg-gradient-to-r from-gray-600 to-gray-700 p-4">
+        <h2 class="text-center text-2xl font-semibold text-white">Toegewezen Deelnemers</h2>
+    </div>
+
+    <div class="rounded-lg bg-white shadow-lg">
+        <!-- Groepsreis Details -->
+        <a asp-controller="Groepsreis"
+           asp-action="Index"
+           class="my-3 rounded-md bg-gray-500 px-4 py-2 text-white shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
+            Terug
+        </a>
+        <div class="border-b border-gray-200 px-6 py-4">
+            <h2 class="text-xl font-semibold text-gray-800">Groepsreis Details</h2>
+        </div>
+        <div class="px-6 py-4 text-gray-700">
+            <ul class="space-y-2">
+                <li><strong>Bestemming:</strong> @Model.Bestemming.Naam</li>
+                <li><strong>Prijs:</strong> €@Model.Groepsreis.Prijs</li>
+                <li><strong>Begindatum:</strong> @Model.Groepsreis.BeginDatum.ToString("dd/MM/yyyy")</li>
+                <li><strong>Einddatum:</strong> @Model.Groepsreis.EindDatum.ToString("dd/MM/yyyy")</li>
+                <li><strong>Minimum Leeftijd:</strong> @Model.Bestemming.MinLeeftijd</li>
+                <li><strong>Maximum Leeftijd:</strong> @Model.Bestemming.MaxLeeftijd</li>
+                <li>
+                    <strong>Beschrijving:</strong> @Model.Bestemming.Beschrijving
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- Deelnemers List Section -->
+    <h2 class="mb-4 text-xl font-semibold text-gray-800">Deelnemerslijst</h2>
+    <div class="shadow-md sm:rounded-lg">
+        <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+            <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th class="px-6 py-3">Naam Kind</th>
+                    <th class="px-6 py-3">Ouder Naam</th>
+                    <th class="px-6 py-3">Geboortedatum</th>
+                    <th class="px-6 py-3">Allergieën</th>
+                    <th class="px-6 py-3">Medicatie</th>
+                    <th class="px-6 py-3">Opmerking</th>
+                    <th class="px-6 py-3">Acties</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var deelnemer in Model.Deelnemers.Select((value, index) => new { value, index }))
+                {
+                    <tr class="border-b bg-white hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
+                        <td class="px-6 py-4">@deelnemer.value.Kind.Naam @deelnemer.value.Kind.Voornaam</td>
+                        <td class="px-6 py-4">@deelnemer.value.Kind.Ouder.Naam @deelnemer.value.Kind.Ouder.Voornaam</td>
+                        <td class="px-6 py-4">@deelnemer.value.Kind.Geboortedatum.ToString("dd/MM/yyyy")</td>
+                        <td class="px-6 py-4">@deelnemer.value.Kind.Allergieen</td>
+                        <td class="px-6 py-4">@deelnemer.value.Kind.Medicatie</td>
+                        <td class="px-6 py-4">@deelnemer.value.Opmerking</td>
+                        <td class="px-6 py-4">
+                            <!-- Dropdown -->
+                            <div class="relative inline-block text-left">
+                                <button id="dropdownButton-@deelnemer.index-@deelnemer.value.Kind.Ouder.Id"
+                                        data-dropdown-toggle="dropdown-@deelnemer.index-@deelnemer.value.Kind.Ouder.Id"
+                                        class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600 dark:focus:ring-blue-800">
+                                    Acties
+                                    <svg class="-mr-1 ml-2 h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                                    </svg>
+                                </button>
+
+                                <!-- Dropdown Menu -->
+                                <div id="dropdown-@deelnemer.index-@deelnemer.value.Kind.Ouder.Id" class="ring-1 ring-opacity-5 z-10 absolute right-0 mt-2 hidden w-48 rounded-lg bg-white shadow-lg ring-black focus:outline-none dark:bg-gray-800 dark:ring-gray-600">
+                                    <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownButton-@deelnemer.index-@deelnemer.value.Kind.Ouder.Id">
+                                        <li>
+                                            <form asp-action="DeleteDeelnemer" asp-controller="Groepsreis" method="post" onsubmit="return confirm('Weet je zeker dat je deze deelnemer wilt verwijderen?');">
+                                                <input type="hidden" name="groepsreisId" value="@Model.Groepsreis.Id" />
+                                                <input type="hidden" name="deelnemerId" value="@deelnemer.value.Kind.Id" />
+                                                <button type="submit" class="block w-full px-4 py-2 text-left text-red-600 hover:bg-red-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                    <i class="fas fa-trash-alt mr-2"></i>Verwijder
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
